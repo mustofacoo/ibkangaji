@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Day One Juz Tracker</title>
+    <style>
+        /* Reset dan Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', sans-serif;
+            background: linear-gradient(135deg, #FFEEA9 0%, #FFBF78 25%, #FF7D29 75%, #7B4019 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .main-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #7B4019, #FF7D29, #FFBF78);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Navigation Tabs */
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .nav-tabs {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 5px;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: #666;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #FF7D29, #FFBF78);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 125, 41, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab:hover:not(.active) {
+            color: #FF7D29;
+            background: rgba(255, 125, 41, 0.1);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Firebase Status */
+        .firebase-status {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-weight: 600;
+            text-align: center;
+            background: linear-gradient(135deg, #F59E0B, #FBBF24);
+            color: white;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            padding: 25px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 125, 41, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-card.orange {
+            background: linear-gradient(135deg, #FFF7ED, #FFEDD5);
+            border-color: #FDBA74;
+        }
+
+        .stat-card.amber {
+            background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
+            border-color: #FDE68A;
+        }
+
+        .stat-card.yellow {
+            background: linear-gradient(135deg, #FEFCE8, #FEF9C3);
+            border-color: #FEF08A;
+        }
+
+        .stat-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            color: #FF7D29;
+            font-size: 24px;
+        }
+
+        .stat-text {
+            color: #7B4019;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Daily Info */
+        .daily-info {
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #EBF8FF, #DBEAFE);
+            border: 1px solid #93C5FD;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+        }
+
+        .info-card h4 {
+            color: #1E40AF;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .info-card p {
+            color: #1E3A8A;
+            font-size: 0.9rem;
+            margin: 5px 0;
+            font-weight: 500;
+        }
+
+        /* Participants Grid */
+        .participants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .participant-card {
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #E5E7EB;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .participant-card:hover {
+            border-color: #FF7D29;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 125, 41, 0.2);
+        }
+
+        .participant-card.completed {
+            background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+            border-color: #34D399;
+        }
+
+        .participant-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .participant-info h3 {
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .participant-info p {
+            color: #6B7280;
+            font-size: 0.9rem;
+        }
+
+        .participant-info small {
+            color: #10B981;
+            font-weight: 600;
+        }
+
+        .participant-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            transition: all 0.3s ease;
+        }
+
+        .icon-completed {
+            color: #10B981;
+        }
+
+        .icon-pending {
+            color: #D1D5DB;
+        }
+
+        /* Monthly Tab */
+        .month-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .month-selector label {
+            color: #374151;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .month-selector select {
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 10px;
+            background: white;
+            color: #374151;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .month-selector select:focus {
+            outline: none;
+            border-color: #FF7D29;
+            box-shadow: 0 0 0 3px rgba(255, 125, 41, 0.1);
+        }
+
+        /* Monthly Stats */
+        .monthly-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .monthly-stat-card {
+            padding: 30px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 125, 41, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .monthly-stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .monthly-stat-card.orange {
+            background: linear-gradient(135deg, #FFF7ED, #FFEDD5);
+        }
+
+        .monthly-stat-card.amber {
+            background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
+        }
+
+        .monthly-stat-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .monthly-stat-header h3 {
+            color: #7B4019;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .monthly-stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #FF7D29;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 125, 41, 0.1);
+        }
+
+        .progress-section h3 {
+            color: #1F2937;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+        }
+
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .progress-item {
+            padding: 20px;
+            background: #F9FAFB;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            transition: all 0.3s ease;
+        }
+
+        .progress-item:hover {
+            background: #F3F4F6;
+            border-color: #D1D5DB;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-name {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.95rem;
+        }
+
+        .progress-count {
+            color: #6B7280;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #E5E7EB;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF7D29, #FFBF78);
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+
+        .progress-percentage {
+            color: #6B7280;
+            font-size: 0.8rem;
+            text-align: right;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .app-container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-tab {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* Icons */
+        .icon {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Firebase Configuration Modal -->
+    <div id="firebase-config-modal" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    ">
+        <div style="
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        ">
+            <h2 style="color: #7B4019; margin-bottom: 20px;">🔧 Setup Firebase</h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                Masukkan konfigurasi Firebase untuk fitur real-time sync.
+                <br><small>Jika tidak ada, klik "Skip" untuk mode offline.</small>
+            </p>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; color: #374151; font-weight: 600; margin-bottom: 5px;">API Key:</label>
+                <input type="text" id="apiKey" placeholder="AIzaSyC..." style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 2px solid #E5E7EB;
+                    border-radius: 8px;
+                    font-size: 14px;
+                ">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; color: #374151; font-weight: 600; margin-bottom: 5px;">Auth Domain:</label>
+                <input type="text" id="authDomain" placeholder="your-project.firebaseapp.com" style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 2px solid #E5E7EB;
+                    border-radius: 8px;
+                    font-size: 14px;
+                ">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; color: #374151; font-weight: 600; margin-bottom: 5px;">Project ID:</label>
+                <input type="text" id="projectId" placeholder="your-project-id" style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 2px solid #E5E7EB;
+                    border-radius: 8px;
+                    font-size: 14px;
+                ">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; color: #374151; font-weight: 600; margin-bottom: 5px;">Storage Bucket:</label>
+                <input type="text" id="storageBucket" placeholder="your-project.appspot.com" style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 2px solid #E5E7EB;
+                    border-radius: 8px;
+                    font-size: 14px;
+                ">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; color: #374151; font-weight: 600; margin-bottom: 5px;">Messaging Sender ID:</label>
+                <input type="text" id="messagingSenderId" placeholder="123456789" style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 2px solid #E5E7EB;
+                    border-radius: 8px;
+                    font-size: 14px;
+                ">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; color: #374151; font-weight: 600; margin-bottom: 5px;">App ID:</label>
+                <input type="text" id="appId" placeholder="1:123456789:web:abc123" style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 2px solid #E5E7EB;
+                    border-radius: 8px;
+                    font-size: 14px;
+                ">
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button onclick="initializeFirebase()" style="
+                    flex: 1;
+                    padding: 12px;
+                    background: linear-gradient(135deg, #FF7D29, #FFBF78);
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    cursor: pointer;
+                ">Connect Firebase</button>
+                <button onclick="skipFirebase()" style="
+                    flex: 1;
+                    padding: 12px;
+                    background: #6B7280;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    cursor: pointer;
+                ">Skip (Offline Mode)</button>
+            </div>
+            
+            <div style="margin-top: 15px; padding: 10px; background: #EBF8FF; border-radius: 8px;">
+                <small style="color: #1E40AF;">
+                    <strong>Cara mendapatkan config Firebase:</strong><br>
+                    1. Kunjungi <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a><br>
+                    2. Buat project baru atau pilih yang ada<br>
+                    3. Settings > Project settings > Your apps<br>
+                    4. Add app > Web app > Copy config
+                </small>
+            </div>
+        </div>
+    </div>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="main-title">One Day One Juz Tracker</h1>
+            <p class="subtitle">Memantau progress membaca Al-Qur'an bersama</p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-container">
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="switchTab('daily')">Harian</button>
+                <button class="nav-tab" onclick="switchTab('monthly')">Rekap Bulanan</button>
+            </div>
+        </div>
+
+        <!-- Daily Tab -->
+        <div id="daily-tab" class="tab-content active">
+            <!-- Firebase Status -->
+            <div class="firebase-status" id="firebase-status">
+                <span id="firebase-status-text">Status: 🟡 Checking Firebase...</span>
+                <div id="firebase-actions" style="margin-top: 10px; display: none;">
+                    <button onclick="showFirebaseConfig()" style="
+                        background: rgba(255,255,255,0.2);
+                        color: white;
+                        border: none;
+                        padding: 5px 10px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        margin-right: 10px;
+                    ">⚙️ Setup Firebase</button>
+                    <button onclick="testFirebaseConnection()" style="
+                        background: rgba(255,255,255,0.2);
+                        color: white;
+                        border: none;
+                        padding: 5px 10px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    ">🔄 Test Connection</button>
+                </div>
+            </div>
+
+            <!-- Header Stats -->
+            <div class="stats-grid">
+                <div class="stat-card orange">
+                    <div class="stat-content">
+                        <span class="stat-icon">📅</span>
+                        <span class="stat-text" id="current-date">Loading...</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card amber">
+                    <div class="stat-content">
+                        <span class="stat-icon">👥</span>
+                        <span class="stat-text"><span id="completed-today">0</span>/30 Selesai Hari Ini</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card yellow">
+                    <div class="stat-content">
+                        <span class="stat-icon">🏆</span>
+                        <span class="stat-text" id="khatam-status">30 Lagi untuk Khatam</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Info -->
+            <div class="daily-info">
+                <div class="info-card">
+                    <h4>📅 Sistem Otomatis</h4>
+                    <p>• Reset centang setiap hari pukul 00:00 WIB</p>
+                    <p>• Rotasi Juz otomatis setiap hari</p>
+                    <p>• Data tersimpan untuk rekap bulanan</p>
+                </div>
+            </div>
+
+            <!-- Participants Grid -->
+            <div class="participants-grid" id="participants-grid">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Monthly Tab -->
+        <div id="monthly-tab" class="tab-content">
+            <!-- Month Selector -->
+            <div class="month-selector">
+                <label>Pilih Bulan:</label>
+                <select id="month-selector" onchange="updateMonthlyView()">
+                    <!-- Will be populated by JavaScript -->
+                </select>
+            </div>
+
+            <!-- Monthly Stats -->
+            <div class="monthly-stats">
+                <div class="monthly-stat-card orange">
+                    <div class="monthly-stat-header">
+                        <span class="stat-icon">🏆</span>
+                        <h3>Khatam Bulan Ini</h3>
+                    </div>
+                    <div class="monthly-stat-value" id="monthly-khatam">0x</div>
+                </div>
+                
+                <div class="monthly-stat-card amber">
+                    <div class="monthly-stat-header">
+                        <span class="stat-icon">📊</span>
+                        <h3>Total Partisipasi</h3>
+                    </div>
+                    <div class="monthly-stat-value" id="monthly-participation">0</div>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div class="progress-section">
+                <h3>Progress Peserta</h3>
+                <div class="progress-grid" id="progress-grid">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, doc, setDoc, collection, getDocs, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        // Make Firebase functions available globally
+        window.firebaseModules = {
+            initializeApp,
+            getFirestore,
+            doc,
+            setDoc,
+            collection,
+            getDocs,
+            onSnapshot,
+            query,
+            orderBy
+        };
+        
+        // Initialize the app after Firebase modules are loaded
+        window.initAppAfterFirebase();
+    </script>
+
+    <script>
+        // Global variables
+        let participants = [];
+        let monthlyRecords = {};
+        let currentDate = new Date();
+        let db = null;
+        let isFirebaseConnected = false;
+        let firebaseApp = null;
+        let unsubscribeListeners = [];
+
+        // Wait for Firebase modules to load
+        window.initAppAfterFirebase = function() {
+            // Check if Firebase config exists in localStorage
+            const savedConfig = localStorage.getItem('firebaseConfig');
+            if (savedConfig) {
+                const config = JSON.parse(savedConfig);
+                connectToFirebase(config);
+            } else {
+                // Show Firebase config modal
+                showFirebaseConfig();
+            }
+            
+            initApp();
+        };
+
+        // Firebase configuration functions
+        function showFirebaseConfig() {
+            document.getElementById('firebase-config-modal').style.display = 'flex';
+        }
+
+        function hideFirebaseConfig() {
+            document.getElementById('firebase-config-modal').style.display = 'none';
+        }
+
+        function initializeFirebase() {
+            const config = {
+                apiKey: document.getElementById('apiKey').value.trim(),
+                authDomain: document.getElementById('authDomain').value.trim(),
+                projectId: document.getElementById('projectId').value.trim(),
+                storageBucket: document.getElementById('storageBucket').value.trim(),
+                messagingSenderId: document.getElementById('messagingSenderId').value.trim(),
+                appId: document.getElementById('appId').value.trim()
+            };
+
+            // Validate config
+            if (!config.apiKey || !config.projectId || !config.appId) {
+                alert('❌ API Key, Project ID, dan App ID wajib diisi!');
+                return;
+            }
+
+            // Save config to localStorage
+            localStorage.setItem('firebaseConfig', JSON.stringify(config));
+            
+            // Connect to Firebase
+            connectToFirebase(config);
+            hideFirebaseConfig();
+        }
+
+        function skipFirebase() {
+            hideFirebaseConfig();
+            updateFirebaseStatus('offline', '🟡 Mode Offline - Data tersimpan di browser saja');
+            initApp();
+        }
+
+        function connectToFirebase(config) {
+            try {
+                // Initialize Firebase
+                firebaseApp = window.firebaseModules.initializeApp(config);
+                db = window.firebaseModules.getFirestore(firebaseApp);
+                isFirebaseConnected = true;
+                
+                updateFirebaseStatus('connected', '🟢 Firebase Terhubung - Data sinkron real-time');
+                
+                // Setup real-time listeners
+                setupFirebaseListeners();
+                
+                // Load data from Firebase
+                loadFromFirebase();
+                
+                console.log('✅ Firebase connected successfully');
+                
+            } catch (error) {
+                console.error('❌ Firebase connection failed:', error);
+                updateFirebaseStatus('error', '🔴 Firebase Error - Periksa konfigurasi');
+                isFirebaseConnected = false;
+            }
+        }
+
+        function updateFirebaseStatus(status, message) {
+            const statusElement = document.getElementById('firebase-status');
+            const statusTextElement = document.getElementById('firebase-status-text');
+            const actionsElement = document.getElementById('firebase-actions');
+            
+            statusTextElement.textContent = message;
+            
+            // Update styling based on status
+            switch(status) {
+                case 'connected':
+                    statusElement.style.background = 'linear-gradient(135deg, #10B981, #34D399)';
+                    break;
+                case 'offline':
+                    statusElement.style.background = 'linear-gradient(135deg, #F59E0B, #FBBF24)';
+                    actionsElement.style.display = 'block';
+                    break;
+                case 'error':
+                    statusElement.style.background = 'linear-gradient(135deg, #EF4444, #F87171)';
+                    actionsElement.style.display = 'block';
+                    break;
+            }
+        }
+
+        function testFirebaseConnection() {
+            if (isFirebaseConnected) {
+                alert('✅ Firebase sudah terhubung dengan baik!');
+            } else {
+                showFirebaseConfig();
+            }
+        }
+
+        // Firebase data functions
+        function setupFirebaseListeners() {
+            if (!isFirebaseConnected || !db) return;
+
+            try {
+                // Listen to participants collection
+                const participantsQuery = window.firebaseModules.query(
+                    window.firebaseModules.collection(db, 'participants'),
+                    window.firebaseModules.orderBy('id')
+                );
+                
+                const unsubscribeParticipants = window.firebaseModules.onSnapshot(participantsQuery, (snapshot) => {
+                    const firebaseParticipants = [];
+                    snapshot.forEach((doc) => {
+                        firebaseParticipants.push(doc.data());
+                    });
+                    
+                    if (firebaseParticipants.length > 0) {
+                        participants = firebaseParticipants;
+                        renderDailyTab();
+                        console.log('📡 Real-time update: participants loaded from Firebase');
+                    }
+                }, (error) => {
+                    console.error('❌ Error listening to participants:', error);
+                });
+
+                // Listen to monthly records
+                const monthlyQuery = window.firebaseModules.collection(db, 'monthlyRecords');
+                const unsubscribeMonthly = window.firebaseModules.onSnapshot(monthlyQuery, (snapshot) => {
+                    const firebaseRecords = {};
+                    snapshot.forEach((doc) => {
+                        firebaseRecords[doc.id] = doc.data();
+                    });
+                    
+                    monthlyRecords = firebaseRecords;
+                    console.log('📡 Real-time update: monthly records loaded from Firebase');
+                }, (error) => {
+                    console.error('❌ Error listening to monthly records:', error);
+                });
+
+                unsubscribeListeners.push(unsubscribeParticipants, unsubscribeMonthly);
+                
+            } catch (error) {
+                console.error('❌ Error setting up Firebase listeners:', error);
+            }
+        }
+
+        async function saveParticipantToFirebase(participant) {
+            if (!isFirebaseConnected || !db) {
+                console.log('📱 Firebase not connected, saving locally only');
+                return;
+            }
+
+            try {
+                await window.firebaseModules.setDoc(
+                    window.firebaseModules.doc(db, 'participants', participant.id.toString()),
+                    participant
+                );
+                console.log(`✅ Participant ${participant.id} saved to Firebase`);
+            } catch (error) {
+                console.error('❌ Error saving participant to Firebase:', error);
+            }
+        }
+
+        async function saveMonthlyRecordToFirebase(monthKey, record) {
+            if (!isFirebaseConnected || !db) return;
+
+            try {
+                await window.firebaseModules.setDoc(
+                    window.firebaseModules.doc(db, 'monthlyRecords', monthKey),
+                    record
+                );
+                console.log(`✅ Monthly record ${monthKey} saved to Firebase`);
+            } catch (error) {
+                console.error('❌ Error saving monthly record to Firebase:', error);
+            }
+        }
+
+        async function loadFromFirebase() {
+            if (!isFirebaseConnected || !db) return;
+
+            try {
+                // Load participants
+                const participantsSnapshot = await window.firebaseModules.getDocs(
+                    window.firebaseModules.collection(db, 'participants')
+                );
+                
+                if (!participantsSnapshot.empty) {
+                    const firebaseParticipants = [];
+                    participantsSnapshot.forEach((doc) => {
+                        firebaseParticipants.push(doc.data());
+                    });
+                    
+                    // Sort by ID
+                    firebaseParticipants.sort((a, b) => a.id - b.id);
+                    participants = firebaseParticipants;
+                    console.log('📥 Participants loaded from Firebase');
+                }
+
+                // Load monthly records
+                const monthlySnapshot = await window.firebaseModules.getDocs(
+                    window.firebaseModules.collection(db, 'monthlyRecords')
+                );
+                
+                const firebaseRecords = {};
+                monthlySnapshot.forEach((doc) => {
+                    firebaseRecords[doc.id] = doc.data();
+                });
+                
+                if (Object.keys(firebaseRecords).length > 0) {
+                    monthlyRecords = firebaseRecords;
+                    console.log('📥 Monthly records loaded from Firebase');
+                }
+
+                renderDailyTab();
+                
+            } catch (error) {
+                console.error('❌ Error loading from Firebase:', error);
+            }
+        }
+
+        // Initialize app
+        function initApp() {
+            initializeParticipants();
+            updateCurrentDate();
+            setupDailyReset();
+            populateMonthSelector();
+            renderDailyTab();
+            
+            // Load from localStorage if no Firebase data
+            if (!isFirebaseConnected) {
+                loadFromLocalStorage();
+            }
+        }
+
+        // Initialize participants
+        function initializeParticipants() {
+            // Only initialize if no existing data
+            if (participants.length === 0) {
+                const today = new Date();
+                const dayOfYear = getDayOfYear(today);
+                
+                participants = Array.from({ length: 30 }, (_, i) => ({
+                    id: i + 1,
+                    name: `Peserta ${i + 1}`,
+                    dailyProgress: {},
+                    currentJuz: ((i + dayOfYear - 1) % 30) + 1,
+                    lastUpdated: today.toISOString().split('T')[0]
+                }));
+            }
+        }
+
+        // Get day of year
+        function getDayOfYear(date) {
+            const start = new Date(date.getFullYear(), 0, 0);
+            const diff = date - start;
+            return Math.floor(diff / (1000 * 60 * 60 * 24));
+        }
+
+        // Update current date display
+        function updateCurrentDate() {
+            const dateStr = currentDate.toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('current-date').textContent = dateStr;
+        }
+
+        // Setup daily reset
+        function setupDailyReset() {
+            setInterval(() => {
+                const now = new Date();
+                const today = now.toISOString().split('T')[0];
+                const currentDay = currentDate.toISOString().split('T')[0];
+                
+                if (today !== currentDay) {
+                    currentDate = now;
+                    updateJuzRotation();
+                    updateCurrentDate();
+                    renderDailyTab();
+                    
+                    // Save to both Firebase and localStorage
+                    participants.forEach(participant => {
+                        saveParticipantToFirebase(participant);
+                    });
+                    saveToLocalStorage();
+                }
+            }, 60000); // Check every minute
+        }
+
+        // Update juz rotation
+        function updateJuzRotation() {
+            const dayOfYear = getDayOfYear(currentDate);
+            participants.forEach(participant => {
+                participant.currentJuz = ((participant.id - 1 + dayOfYear - 1) % 30) + 1;
+            });
+        }
+
+        // Toggle participant check
+        function toggleParticipantCheck(participantId) {
+            const today = currentDate.toISOString().split('T')[0];
+            const participant = participants.find(p => p.id === participantId);
+            
+            if (participant) {
+                if (participant.dailyProgress[today]) {
+                    delete participant.dailyProgress[today];
+                } else {
+                    participant.dailyProgress[today] = true;
+                }
+                
+                renderDailyTab();
+                updateMonthlyRecords();
+                
+                // Save to Firebase
+                saveParticipantToFirebase(participant);
+                
+                // Save to localStorage as backup
+                saveToLocalStorage();
+            }
+        }
+
+        // Render daily tab
+        function renderDailyTab() {
+            const today = currentDate.toISOString().split('T')[0];
+            const completedToday = participants.filter(p => p.dailyProgress[today]).length;
+            
+            // Update stats
+            document.getElementById('completed-today').textContent = completedToday;
+            document.getElementById('khatam-status').textContent = 
+                completedToday === 30 ? 'Khatam Hari Ini! 🎉' : `${30 - completedToday} Lagi untuk Khatam`;
+            
+            // Render participants
+            const grid = document.getElementById('participants-grid');
+            grid.innerHTML = '';
+            
+            participants.forEach(participant => {
+                const isCompleted = participant.dailyProgress[today];
+                const card = document.createElement('div');
+                card.className = `participant-card ${isCompleted ? 'completed' : ''}`;
+                card.onclick = () => toggleParticipantCheck(participant.id);
+                
+                card.innerHTML = `
+                    <div class="participant-content">
+                        <div class="participant-info">
+                            <h3>${participant.name}</h3>
+                            <p>Juz ${participant.currentJuz} - Hari Ini</p>
+                            ${isCompleted ? '<small>✅ Sudah Selesai</small>' : ''}
+                        </div>
+                        <div class="participant-actions">
+                            <span class="icon ${isCompleted ? 'icon-completed' : 'icon-pending'}">📖</span>
+                            <span class="icon ${isCompleted ? 'icon-completed' : 'icon-pending'}">✅</span>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            if (tabName === 'monthly') {
+                renderMonthlyTab();
+            }
+        }
+
+        // Populate month selector
+        function populateMonthSelector() {
+            const selector = document.getElementById('month-selector');
+            const months = getAvailableMonths();
+            
+            selector.innerHTML = '';
+            months.forEach(month => {
+                const option = document.createElement('option');
+                option.value = month.key;
+                option.textContent = month.name;
+                selector.appendChild(option);
+            });
+            
+            selector.value = currentDate.toISOString().substring(0, 7);
+        }
+
+        // Get available months
+        function getAvailableMonths() {
+            const months = [];
+            const startDate = new Date('2025-06-01');
+            const currentMonth = new Date();
+            
+            while (startDate <= currentMonth) {
+                const monthKey = startDate.toISOString().substring(0, 7);
+                const monthName = startDate.toLocaleDateString('id-ID', {
+                    year: 'numeric',
+                    month: 'long'
+                });
+                months.push({ key: monthKey, name: monthName });
+                startDate.setMonth(startDate.getMonth() + 1);
+            }
+            
+            return months;
+        }
+
+        // Update monthly records
+        function updateMonthlyRecords() {
+            const today = currentDate.toISOString().split('T')[0];
+            const monthKey = today.substring(0, 7);
+            
+            if (!monthlyRecords[monthKey]) {
+                monthlyRecords[monthKey] = {
+                    khatamCount: 0,
+                    participantProgress: {},
+                    dailyCompletions: {}
+                };
+            }
+            
+            const monthRecord = monthlyRecords[monthKey];
+            
+            // Update participant progress
+            participants.forEach(participant => {
+                const monthlyChecks = Object.keys(participant.dailyProgress)
+                    .filter(date => date.startsWith(monthKey))
+                    .length;
+                monthRecord.participantProgress[participant.id] = monthlyChecks;
+            });
+            
+            // Check for khatam
+            const todayCompletions = participants.filter(p => p.dailyProgress[today]).length;
+            if (todayCompletions === 30) {
+                monthRecord.dailyCompletions[today] = true;
+            } else {
+                delete monthRecord.dailyCompletions[today];
+            }
+            
+            monthRecord.khatamCount = Object.keys(monthRecord.dailyCompletions).length;
+            
+            // Save to Firebase
+            saveMonthlyRecordToFirebase(monthKey, monthRecord);
+        }
+
+        // Render monthly tab
+        function renderMonthlyTab() {
+            const selectedMonth = document.getElementById('month-selector').value;
+            const monthRecord = monthlyRecords[selectedMonth] || {
+                khatamCount: 0,
+                participantProgress: {},
+                dailyCompletions: {}
+            };
+            
+            // Update monthly stats
+            document.getElementById('monthly-khatam').textContent = monthRecord.khatamCount + 'x';
+            
+            const totalParticipation = Object.values(monthRecord.participantProgress)
+                .reduce((sum, count) => sum + count, 0);
+            document.getElementById('monthly-participation').textContent = totalParticipation;
+            
+            // Render progress grid
+            const progressGrid = document.getElementById('progress-grid');
+            progressGrid.innerHTML = '';
+            
+            participants.forEach(participant => {
+                const monthlyCount = monthRecord.participantProgress[participant.id] || 0;
+                const percentage = Math.round((monthlyCount / 30) * 100);
+                
+                const progressItem = document.createElement('div');
+                progressItem.className = 'progress-item';
+                progressItem.innerHTML = `
+                    <div class="progress-header">
+                        <span class="progress-name">${participant.name}</span>
+                        <span class="progress-count">${monthlyCount}/30</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <div class="progress-percentage">${percentage}%</div>
+                `;
+                
+                progressGrid.appendChild(progressItem);
+            });
+        }
+
+        // Update monthly view
+        function updateMonthlyView() {
+            renderMonthlyTab();
+        }
+
+        // Local storage functions (as backup)
+        function saveToLocalStorage() {
+            localStorage.setItem('participants', JSON.stringify(participants));
+            localStorage.setItem('monthlyRecords', JSON.stringify(monthlyRecords));
+            localStorage.setItem('currentDate', currentDate.toISOString());
+        }
+
+        function loadFromLocalStorage() {
+            const savedParticipants = localStorage.getItem('participants');
+            const savedMonthlyRecords = localStorage.getItem('monthlyRecords');
+            const savedDate = localStorage.getItem('currentDate');
+            
+            if (savedParticipants) {
+                const localParticipants = JSON.parse(savedParticipants);
+                if (participants.length === 0) {
+                    participants = localParticipants;
+                }
+            }
+            
+            if (savedMonthlyRecords) {
+                const localRecords = JSON.parse(savedMonthlyRecords);
+                if (Object.keys(monthlyRecords).length === 0) {
+                    monthlyRecords = localRecords;
+                }
+            }
+            
+            if (savedDate) {
+                const savedDateObj = new Date(savedDate);
+                const today = new Date();
+                if (savedDateObj.toDateString() !== today.toDateString()) {
+                    currentDate = today;
+                    updateJuzRotation();
+                }
+            }
+            
+            renderDailyTab();
+        }
+
+        // Cleanup function
+        window.addEventListener('beforeunload', () => {
+            unsubscribeListeners.forEach(unsubscribe => {
+                if (typeof unsubscribe === 'function') {
+                    unsubscribe();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
