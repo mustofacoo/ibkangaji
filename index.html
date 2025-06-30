@@ -733,15 +733,19 @@
 
         // Wait for Firebase modules to load
         window.initAppAfterFirebase = function() {
-            // Check if Firebase config exists in localStorage
-            const savedConfig = localStorage.getItem('firebaseConfig');
-            if (savedConfig) {
-                const config = JSON.parse(savedConfig);
-                connectToFirebase(config);
-            } else {
-                // Show Firebase config modal
-                showFirebaseConfig();
-            }
+            // Use the provided Firebase config
+            const firebaseConfig = {
+                apiKey: "AIzaSyCN3llYwsXzGRZD9VmtMOkkz0r5394vK8E",
+                authDomain: "odojfix.firebaseapp.com",
+                projectId: "odojfix",
+                storageBucket: "odojfix.firebasestorage.app",
+                messagingSenderId: "833001144637",
+                appId: "1:833001144637:web:f326f160a1565edd068554"
+            };
+            
+            // Auto-connect to Firebase
+            connectToFirebase(firebaseConfig);
+            hideFirebaseConfig(); // Hide the config modal since we're auto-connecting
             
             initApp();
         };
@@ -792,7 +796,7 @@
                 db = window.firebaseModules.getFirestore(firebaseApp);
                 isFirebaseConnected = true;
                 
-                updateFirebaseStatus('connected', '🟢 Firebase Terhubung - Data sinkron real-time');
+                updateFirebaseStatus('connected', '🟢 Firebase Terhubung - Data sinkron real-time | Project: odojfix');
                 
                 // Setup real-time listeners
                 setupFirebaseListeners();
@@ -800,12 +804,15 @@
                 // Load data from Firebase
                 loadFromFirebase();
                 
-                console.log('✅ Firebase connected successfully');
+                console.log('✅ Firebase connected successfully to project: odojfix');
                 
             } catch (error) {
                 console.error('❌ Firebase connection failed:', error);
-                updateFirebaseStatus('error', '🔴 Firebase Error - Periksa konfigurasi');
+                updateFirebaseStatus('error', '🔴 Firebase Error - Menggunakan mode offline');
                 isFirebaseConnected = false;
+                
+                // Fallback to localStorage
+                loadFromLocalStorage();
             }
         }
 
@@ -820,6 +827,7 @@
             switch(status) {
                 case 'connected':
                     statusElement.style.background = 'linear-gradient(135deg, #10B981, #34D399)';
+                    actionsElement.style.display = 'none'; // Hide actions when connected
                     break;
                 case 'offline':
                     statusElement.style.background = 'linear-gradient(135deg, #F59E0B, #FBBF24)';
@@ -834,9 +842,9 @@
 
         function testFirebaseConnection() {
             if (isFirebaseConnected) {
-                alert('✅ Firebase sudah terhubung dengan baik!');
+                alert('✅ Firebase sudah terhubung dengan baik!\n\nProject: odojfix\nStatus: Real-time sync aktif');
             } else {
-                showFirebaseConfig();
+                alert('❌ Firebase tidak terhubung.\n\nMenggunakan mode offline.\nData tersimpan di browser lokal saja.');
             }
         }
 
