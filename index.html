@@ -865,10 +865,21 @@
                         firebaseParticipants.push(doc.data());
                     });
                     
-                    if (firebaseParticipants.length > 0) {
+                    // Only update if we have data from Firebase, and don't replace initialized data unnecessarily
+                    if (firebaseParticipants.length === 30) {
                         participants = firebaseParticipants;
                         renderDailyTab();
                         console.log('📡 Real-time update: participants loaded from Firebase');
+                    } else if (firebaseParticipants.length > 0) {
+                        // Partial data - merge with existing participants
+                        firebaseParticipants.forEach(fbParticipant => {
+                            const existingIndex = participants.findIndex(p => p.id === fbParticipant.id);
+                            if (existingIndex !== -1) {
+                                participants[existingIndex] = fbParticipant;
+                            }
+                        });
+                        renderDailyTab();
+                        console.log(`📡 Partial update: ${firebaseParticipants.length} participants updated from Firebase`);
                     }
                 }, (error) => {
                     console.error('❌ Error listening to participants:', error);
@@ -882,7 +893,7 @@
                         firebaseRecords[doc.id] = doc.data();
                     });
                     
-                    monthlyRecords = firebaseRecords;
+                    monthlyRecords = { ...monthlyRecords, ...firebaseRecords };
                     console.log('📡 Real-time update: monthly records loaded from Firebase');
                 }, (error) => {
                     console.error('❌ Error listening to monthly records:', error);
@@ -941,10 +952,36 @@
                         firebaseParticipants.push(doc.data());
                     });
                     
-                    // Sort by ID
+                    // Sort by ID and only use if we have all 30 participants
                     firebaseParticipants.sort((a, b) => a.id - b.id);
-                    participants = firebaseParticipants;
-                    console.log('📥 Participants loaded from Firebase');
+                    
+                    if (firebaseParticipants.length === 30) {
+                        participants = firebaseParticipants;
+                        console.log('📥 All 30 participants loaded from Firebase');
+                    } else {
+                        // If partial data, merge with initialized participants
+                        console.log(`📥 ${firebaseParticipants.length} participants found in Firebase, initializing rest`);
+                        firebaseParticipants.forEach(fbParticipant => {
+                            const existingIndex = participants.findIndex(p => p.id === fbParticipant.id);
+                            if (existingIndex !== -1) {
+                                participants[existingIndex] = fbParticipant;
+                            }
+                        });
+                        
+                        // Save missing participants to Firebase
+                        participants.forEach(participant => {
+                            const exists = firebaseParticipants.find(fp => fp.id === participant.id);
+                            if (!exists) {
+                                saveParticipantToFirebase(participant);
+                            }
+                        });
+                    }
+                } else {
+                    // No participants in Firebase, save initialized participants
+                    console.log('📥 No participants in Firebase, saving initialized data');
+                    participants.forEach(participant => {
+                        saveParticipantToFirebase(participant);
+                    });
                 }
 
                 // Load monthly records
@@ -958,7 +995,7 @@
                 });
                 
                 if (Object.keys(firebaseRecords).length > 0) {
-                    monthlyRecords = firebaseRecords;
+                    monthlyRecords = { ...monthlyRecords, ...firebaseRecords };
                     console.log('📥 Monthly records loaded from Firebase');
                 }
 
@@ -985,19 +1022,19 @@
 
         // Initialize participants
         function initializeParticipants() {
-            // Only initialize if no existing data
-            if (participants.length === 0) {
-                const today = new Date();
-                const dayOfYear = getDayOfYear(today);
-                
-                participants = Array.from({ length: 30 }, (_, i) => ({
-                    id: i + 1,
-                    name: `Peserta ${i + 1}`,
-                    dailyProgress: {},
-                    currentJuz: ((i + dayOfYear - 1) % 30) + 1,
-                    lastUpdated: today.toISOString().split('T')[0]
-                }));
-            }
+            // Always initialize all 30 participants first
+            const today = new Date();
+            const dayOfYear = getDayOfYear(today);
+            
+            participants = Array.from({ length: 30 }, (_, i) => ({
+                id: i + 1,
+                name: `Peserta ${i + 1}`,
+                dailyProgress: {},
+                currentJuz: ((i + dayOfYear - 1) % 30) + 1,
+                lastUpdated: today.toISOString().split('T')[0]
+            }));
+            
+            console.log('✅ Initialized 30 participants locally');
         }
 
         // Get day of year
@@ -1074,7 +1111,14 @@
         // Render daily tab
         function renderDailyTab() {
             const today = currentDate.toISOString().split('T')[0];
-            const completedToday = participants.filter(p => p.dailyProgress[today]).length;
+            
+            // Ensure we have 30 participants
+            if (participants.length !== 30) {
+                console.warn(`⚠️ Expected 30 participants, found ${participants.length}. Re-initializing...`);
+                initializeParticipants();
+            }
+            
+            const completedToday = participants.filter(p => p.dailyProgress && p.dailyProgress[today]).length;
             
             // Update stats
             document.getElementById('completed-today').textContent = completedToday;
@@ -1086,7 +1130,7 @@
             grid.innerHTML = '';
             
             participants.forEach(participant => {
-                const isCompleted = participant.dailyProgress[today];
+                const isCompleted = participant.dailyProgress && participant.dailyProgress[today];
                 const card = document.createElement('div');
                 card.className = `participant-card ${isCompleted ? 'completed' : ''}`;
                 card.onclick = () => toggleParticipantCheck(participant.id);
@@ -1094,8 +1138,8 @@
                 card.innerHTML = `
                     <div class="participant-content">
                         <div class="participant-info">
-                            <h3>${participant.name}</h3>
-                            <p>Juz ${participant.currentJuz} - Hari Ini</p>
+                            <h3>${participant.name || `Peserta ${participant.id}`}</h3>
+                            <p>Juz ${participant.currentJuz || participant.id} - Hari Ini</p>
                             ${isCompleted ? '<small>✅ Sudah Selesai</small>' : ''}
                         </div>
                         <div class="participant-actions">
@@ -1107,6 +1151,8 @@
                 
                 grid.appendChild(card);
             });
+            
+            console.log(`🎨 Rendered ${participants.length} participants`);
         }
 
         // Switch tabs
