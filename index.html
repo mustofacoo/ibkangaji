@@ -731,7 +731,7 @@
     <script>
         // Application Data - NAMA PESERTA YANG SUDAH DIPERBAIKI
         const participantNames = [
-            'Syafiq',      // Peserta 1
+            'Syafiq',      // Peserta 3
             'Siti',        // Peserta 2  
             'Muhammad',    // Peserta 3
             'Fatimah',     // Peserta 4
@@ -767,152 +767,122 @@
         const juzDetails = {
             1: { 
                 surah: "Al-Fatihah 1:1 - Al-Baqarah 2:141", 
-                pages: "1-21",
                 description: "Al-Fatihah lengkap + Al-Baqarah ayat 1-141"
             },
             2: { 
                 surah: "Al-Baqarah 2:142 - 2:252", 
-                pages: "22-41",
                 description: "Al-Baqarah ayat 142-252 (Kiblat & Haji)"
             },
             3: { 
                 surah: "Al-Baqarah 2:253 - Ali Imran 3:92", 
-                pages: "42-62",
                 description: "Al-Baqarah 253-286 + Ali Imran 1-92"
             },
             4: { 
                 surah: "Ali Imran 3:93 - An-Nisa 4:23", 
-                pages: "63-82",
                 description: "Ali Imran 93-200 + An-Nisa 1-23"
             },
             5: { 
                 surah: "An-Nisa 4:24 - 4:147", 
-                pages: "83-102",
                 description: "An-Nisa ayat 24-147 (Hukum keluarga)"
             },
             6: { 
                 surah: "An-Nisa 4:148 - Al-Maidah 5:81", 
-                pages: "103-121",
                 description: "An-Nisa 148-176 + Al-Maidah 1-81"
             },
             7: { 
                 surah: "Al-Maidah 5:82 - Al-An'am 6:110", 
-                pages: "122-141",
                 description: "Al-Maidah 82-120 + Al-An'am 1-110"
             },
             8: { 
                 surah: "Al-An'am 6:111 - Al-A'raf 7:87", 
-                pages: "142-162",
                 description: "Al-An'am 111-165 + Al-A'raf 1-87"
             },
             9: { 
                 surah: "Al-A'raf 7:88 - Al-Anfal 8:40", 
-                pages: "163-182",
                 description: "Al-A'raf 88-206 + Al-Anfal 1-40"
             },
             10: { 
                 surah: "Al-Anfal 8:41 - At-Taubah 9:92", 
-                pages: "183-202",
                 description: "Al-Anfal 41-75 + At-Taubah 1-92"
             },
             11: { 
                 surah: "At-Taubah 9:93 - Hud 11:5", 
-                pages: "203-222",
                 description: "At-Taubah 93-129 + Yunus + Hud 1-5"
             },
             12: { 
                 surah: "Hud 11:6 - Yusuf 12:52", 
-                pages: "223-242",
                 description: "Hud 6-123 + Yusuf 1-52"
             },
             13: { 
                 surah: "Yusuf 12:53 - Ibrahim 14:52", 
-                pages: "243-262",
                 description: "Yusuf 53-111 + Ar-Ra'd + Ibrahim"
             },
             14: { 
                 surah: "Al-Hijr 15:1 - An-Nahl 16:128", 
-                pages: "263-282",
                 description: "Al-Hijr + An-Nahl lengkap"
             },
             15: { 
                 surah: "Al-Isra 17:1 - Al-Kahf 18:74", 
-                pages: "283-302",
                 description: "Al-Isra lengkap + Al-Kahf 1-74"
             },
             16: { 
                 surah: "Al-Kahf 18:75 - Taha 20:135", 
-                pages: "303-322",
                 description: "Al-Kahf 75-110 + Maryam + Taha"
             },
             17: { 
                 surah: "Al-Anbiya 21:1 - Al-Hajj 22:78", 
-                pages: "323-342",
                 description: "Al-Anbiya + Al-Hajj lengkap"
             },
             18: { 
                 surah: "Al-Mu'minun 23:1 - Al-Furqan 25:20", 
-                pages: "343-362",
                 description: "Al-Mu'minun + An-Nur + Al-Furqan 1-20"
             },
             19: { 
                 surah: "Al-Furqan 25:21 - An-Naml 27:55", 
-                pages: "363-382",
                 description: "Al-Furqan 21-77 + Asy-Syu'ara + An-Naml 1-55"
             },
             20: { 
                 surah: "An-Naml 27:56 - Al-Ankabut 29:45", 
-                pages: "383-402",
                 description: "An-Naml 56-93 + Al-Qasas + Al-Ankabut 1-45"
             },
             21: { 
                 surah: "Al-Ankabut 29:46 - Al-Ahzab 33:30", 
-                pages: "403-422",
                 description: "Al-Ankabut 46-69 + Ar-Rum + Luqman + As-Sajdah + Al-Ahzab 1-30"
             },
             22: { 
                 surah: "Al-Ahzab 33:31 - Ya Sin 36:27", 
-                pages: "423-442",
                 description: "Al-Ahzab 31-73 + Saba + Fatir + Ya Sin 1-27"
             },
             23: { 
                 surah: "Ya Sin 36:28 - Az-Zumar 39:31", 
-                pages: "443-462",
                 description: "Ya Sin 28-83 + As-Saffat + Sad + Az-Zumar 1-31"
             },
             24: { 
                 surah: "Az-Zumar 39:32 - Fussilat 41:46", 
-                pages: "463-482",
                 description: "Az-Zumar 32-75 + Ghafir + Fussilat 1-46"
             },
             25: { 
                 surah: "Fussilat 41:47 - Al-Jatsiyah 45:37", 
-                pages: "483-502",
                 description: "Fussilat 47-54 + Asy-Syura + Az-Zukhruf + Ad-Dukhan + Al-Jatsiyah"
             },
             26: { 
                 surah: "Al-Ahqaf 46:1 - Az-Zariyat 51:30", 
-                pages: "503-522",
                 description: "Al-Ahqaf + Muhammad + Al-Fath + Al-Hujurat + Qaf + Az-Zariyat 1-30"
             },
             27: { 
                 surah: "Az-Zariyat 51:31 - Al-Hadid 57:29", 
-                pages: "523-542",
                 description: "Az-Zariyat 31-60 + At-Tur + An-Najm + Al-Qamar + Ar-Rahman + Al-Waqi'ah + Al-Hadid"
             },
             28: { 
                 surah: "Al-Mujadilah 58:1 - At-Tahrim 66:12", 
-                pages: "543-562",
                 description: "Al-Mujadilah + Al-Hasyr + Al-Mumtahanah + As-Saff + Al-Jumu'ah + Al-Munafiqun + At-Taghabun + At-Talaq + At-Tahrim"
             },
             29: { 
                 surah: "Al-Mulk 67:1 - Al-Mursalat 77:50", 
-                pages: "563-582",
                 description: "Al-Mulk + Al-Qalam + Al-Haqqah + Al-Ma'arij + Nuh + Al-Jinn + Al-Muzzammil + Al-Muddatstsir + Al-Qiyamah + Al-Insan + Al-Mursalat"
             },
             30: { 
                 surah: "An-Naba 78:1 - An-Nas 114:6", 
-                pages: "583-604",
                 description: "An-Naba sampai An-Nas (Juz terakhir)"
             }
         };
