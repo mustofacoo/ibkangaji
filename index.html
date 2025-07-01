@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One Day One Juz Ibnu Katsir</title>
+    <title>One Day One Juz Tracker</title>
     <style>
         /* Reset dan Base Styles */
         * {
@@ -191,10 +191,10 @@
             font-weight: 500;
         }
 
-        /* Participants Grid */
+        /* Participants Grid - Enhanced */
         .participants-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 20px;
         }
 
@@ -222,31 +222,38 @@
 
         .participant-content {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
+        }
+
+        .participant-info {
+            flex: 1;
+            margin-right: 15px;
         }
 
         .participant-info h3 {
             font-weight: 600;
             color: #1F2937;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-size: 1.1rem;
         }
 
         .participant-info p {
             color: #6B7280;
             font-size: 0.9rem;
+            margin-bottom: 4px;
         }
 
         .participant-info small {
-            color: #10B981;
             font-weight: 600;
         }
 
         .participant-actions {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            flex-shrink: 0;
         }
 
         .icon {
@@ -646,10 +653,10 @@
             <!-- Daily Info -->
             <div class="daily-info">
                 <div class="info-card">
-                    <h4>Ya Allah, rahmati kami dengan Al Qur'an</h4>
-                    <p>Jadikan kami lebih mencintai Al Qur'an</p>
-                    <p>Anugerahkan pemahaman Al Qur'an kepada kami</p>
-                    <p>Berkahi waktu kami, hingga tak habis sia-sia untuk hal tak bermanfaat</p>
+                    <h4>Ya Allah, turunkan rahmat kepada kami dengan wasilah bacaan Al-Quran</h4>
+                    <p>Jadikan kami lebih mencintai untuk berinteraksi dengan Al Qur'an daripada berbuat sia-sia</p>
+                    <p>Anugerahkan kami pemahaman Al Qur'an dan pengamalannya</p>
+                    <p>Perkenankan Al-Qur'an memberi syafaat untuk kami</p>
                 </div>
             </div>
 
@@ -722,7 +729,193 @@
     </script>
 
     <script>
-        // Global variables
+        // Application Data - GANTI NAMA PESERTA DI SINI
+        const participantNames = [
+            'Syafiq',      // Peserta 1
+            'Siti',   // Peserta 2  
+            'Muhammad',   // Peserta 3
+            'Fatimah',    // Peserta 4
+            'Abdul',     // Peserta 5
+            'Khadijah',   // Peserta 6
+            'Umar',       // Peserta 7
+            'Maryam',    // Peserta 8
+            'Ali',       // Peserta 9
+            'Said',    // Peserta 10
+            'Yusuf',    // Peserta 11
+            'Zainab',     // Peserta 12
+            'Hamza',      // Peserta 13
+            'Aminah',    // Peserta 14
+            'Khalid',     // Peserta 15
+            'Hafsa',       // Peserta 16
+            'Bilal',      // Peserta 17
+            'Nur',     // Peserta 18
+            'Salman',    // Peserta 19
+            'Ummu',     // Peserta 20
+            'Zaid',  // Peserta 21
+            'Asma',   // Peserta 22
+            'Talhah',    // Peserta 23
+            'Habibah',     // Peserta 24
+            'Sadil',     // Peserta 25
+            'Saris',  // Peserta 26
+            'Abdullah',    // Peserta 27
+            'Juwed',  // Peserta 28
+            'Anas',   // Peserta 29
+            'Umming'        // Peserta 30
+        ];
+
+        // Detail Juz dan Ayat - DETAIL BACAAN SETIAP JUZ
+        const juzDetails = {
+            1: { 
+                surah: "Al-Fatihah 1:1 - Al-Baqarah 2:141", 
+                pages: "1-21",
+                description: "Al-Fatihah lengkap + Al-Baqarah ayat 1-141"
+            },
+            2: { 
+                surah: "Al-Baqarah 2:142 - 2:252", 
+                pages: "22-41",
+                description: "Al-Baqarah ayat 142-252 (Kiblat & Haji)"
+            },
+            3: { 
+                surah: "Al-Baqarah 2:253 - Ali Imran 3:92", 
+                pages: "42-62",
+                description: "Al-Baqarah 253-286 + Ali Imran 1-92"
+            },
+            4: { 
+                surah: "Ali Imran 3:93 - An-Nisa 4:23", 
+                pages: "63-82",
+                description: "Ali Imran 93-200 + An-Nisa 1-23"
+            },
+            5: { 
+                surah: "An-Nisa 4:24 - 4:147", 
+                pages: "83-102",
+                description: "An-Nisa ayat 24-147 (Hukum keluarga)"
+            },
+            6: { 
+                surah: "An-Nisa 4:148 - Al-Maidah 5:81", 
+                pages: "103-121",
+                description: "An-Nisa 148-176 + Al-Maidah 1-81"
+            },
+            7: { 
+                surah: "Al-Maidah 5:82 - Al-An'am 6:110", 
+                pages: "122-141",
+                description: "Al-Maidah 82-120 + Al-An'am 1-110"
+            },
+            8: { 
+                surah: "Al-An'am 6:111 - Al-A'raf 7:87", 
+                pages: "142-162",
+                description: "Al-An'am 111-165 + Al-A'raf 1-87"
+            },
+            9: { 
+                surah: "Al-A'raf 7:88 - Al-Anfal 8:40", 
+                pages: "163-182",
+                description: "Al-A'raf 88-206 + Al-Anfal 1-40"
+            },
+            10: { 
+                surah: "Al-Anfal 8:41 - At-Taubah 9:92", 
+                pages: "183-202",
+                description: "Al-Anfal 41-75 + At-Taubah 1-92"
+            },
+            11: { 
+                surah: "At-Taubah 9:93 - Hud 11:5", 
+                pages: "203-222",
+                description: "At-Taubah 93-129 + Yunus + Hud 1-5"
+            },
+            12: { 
+                surah: "Hud 11:6 - Yusuf 12:52", 
+                pages: "223-242",
+                description: "Hud 6-123 + Yusuf 1-52"
+            },
+            13: { 
+                surah: "Yusuf 12:53 - Ibrahim 14:52", 
+                pages: "243-262",
+                description: "Yusuf 53-111 + Ar-Ra'd + Ibrahim"
+            },
+            14: { 
+                surah: "Al-Hijr 15:1 - An-Nahl 16:128", 
+                pages: "263-282",
+                description: "Al-Hijr + An-Nahl lengkap"
+            },
+            15: { 
+                surah: "Al-Isra 17:1 - Al-Kahf 18:74", 
+                pages: "283-302",
+                description: "Al-Isra lengkap + Al-Kahf 1-74"
+            },
+            16: { 
+                surah: "Al-Kahf 18:75 - Taha 20:135", 
+                pages: "303-322",
+                description: "Al-Kahf 75-110 + Maryam + Taha"
+            },
+            17: { 
+                surah: "Al-Anbiya 21:1 - Al-Hajj 22:78", 
+                pages: "323-342",
+                description: "Al-Anbiya + Al-Hajj lengkap"
+            },
+            18: { 
+                surah: "Al-Mu'minun 23:1 - Al-Furqan 25:20", 
+                pages: "343-362",
+                description: "Al-Mu'minun + An-Nur + Al-Furqan 1-20"
+            },
+            19: { 
+                surah: "Al-Furqan 25:21 - An-Naml 27:55", 
+                pages: "363-382",
+                description: "Al-Furqan 21-77 + Asy-Syu'ara + An-Naml 1-55"
+            },
+            20: { 
+                surah: "An-Naml 27:56 - Al-Ankabut 29:45", 
+                pages: "383-402",
+                description: "An-Naml 56-93 + Al-Qasas + Al-Ankabut 1-45"
+            },
+            21: { 
+                surah: "Al-Ankabut 29:46 - Al-Ahzab 33:30", 
+                pages: "403-422",
+                description: "Al-Ankabut 46-69 + Ar-Rum + Luqman + As-Sajdah + Al-Ahzab 1-30"
+            },
+            22: { 
+                surah: "Al-Ahzab 33:31 - Ya Sin 36:27", 
+                pages: "423-442",
+                description: "Al-Ahzab 31-73 + Saba + Fatir + Ya Sin 1-27"
+            },
+            23: { 
+                surah: "Ya Sin 36:28 - Az-Zumar 39:31", 
+                pages: "443-462",
+                description: "Ya Sin 28-83 + As-Saffat + Sad + Az-Zumar 1-31"
+            },
+            24: { 
+                surah: "Az-Zumar 39:32 - Fussilat 41:46", 
+                pages: "463-482",
+                description: "Az-Zumar 32-75 + Ghafir + Fussilat 1-46"
+            },
+            25: { 
+                surah: "Fussilat 41:47 - Al-Jatsiyah 45:37", 
+                pages: "483-502",
+                description: "Fussilat 47-54 + Asy-Syura + Az-Zukhruf + Ad-Dukhan + Al-Jatsiyah"
+            },
+            26: { 
+                surah: "Al-Ahqaf 46:1 - Az-Zariyat 51:30", 
+                pages: "503-522",
+                description: "Al-Ahqaf + Muhammad + Al-Fath + Al-Hujurat + Qaf + Az-Zariyat 1-30"
+            },
+            27: { 
+                surah: "Az-Zariyat 51:31 - Al-Hadid 57:29", 
+                pages: "523-542",
+                description: "Az-Zariyat 31-60 + At-Tur + An-Najm + Al-Qamar + Ar-Rahman + Al-Waqi'ah + Al-Hadid"
+            },
+            28: { 
+                surah: "Al-Mujadilah 58:1 - At-Tahrim 66:12", 
+                pages: "543-562",
+                description: "Al-Mujadilah + Al-Hasyr + Al-Mumtahanah + As-Saff + Al-Jumu'ah + Al-Munafiqun + At-Taghabun + At-Talaq + At-Tahrim"
+            },
+            29: { 
+                surah: "Al-Mulk 67:1 - Al-Mursalat 77:50", 
+                pages: "563-582",
+                description: "Al-Mulk + Al-Qalam + Al-Haqqah + Al-Ma'arij + Nuh + Al-Jinn + Al-Muzzammil + Al-Muddatstsir + Al-Qiyamah + Al-Insan + Al-Mursalat"
+            },
+            30: { 
+                surah: "An-Naba 78:1 - An-Nas 114:6", 
+                pages: "583-604",
+                description: "An-Naba sampai An-Nas (Juz terakhir)"
+            }
+        };
         let participants = [];
         let monthlyRecords = {};
         let currentDate = new Date();
@@ -798,8 +991,8 @@
                 db = window.firebaseModules.getFirestore(firebaseApp);
                 isFirebaseConnected = true;
                 
-               // updateFirebaseStatus('connected', '🟢 Firebase Terhubung - Data sinkron real-time | Project: odojfix');
-                updateFirebaseStatus('Alhamdulillah', '🟢 Mohon centang seusai nama masing-masing');
+                updateFirebaseStatus('connected', '🟢 CENTANG SESUAI NAMA');
+                
                 // Setup real-time listeners
                 setupFirebaseListeners();
                 
@@ -1035,13 +1228,13 @@
             
             participants = Array.from({ length: 30 }, (_, i) => ({
                 id: i + 1,
-                name: `Peserta ${i + 1}`,
+                name: participantNames[i] || `Peserta ${i + 1}`, // Use custom names
                 dailyProgress: {},
                 currentJuz: ((i + dayOfYear - 1) % 30) + 1,
                 lastUpdated: today.toISOString().split('T')[0]
             }));
             
-            console.log('✅ Initialized 30 participants locally');
+            console.log('✅ Initialized 30 participants with custom names');
         }
 
         // Get day of year
@@ -1201,6 +1394,13 @@
             
             participants.forEach(participant => {
                 const isCompleted = participant.dailyProgress && participant.dailyProgress[today];
+                const juzNumber = participant.currentJuz || participant.id;
+                const juzDetail = juzDetails[juzNumber] || { 
+                    surah: "Detail tidak tersedia", 
+                    pages: "?",
+                    description: "Silakan cek Al-Qur'an"
+                };
+                
                 const card = document.createElement('div');
                 card.className = `participant-card ${isCompleted ? 'completed' : ''}`;
                 card.onclick = () => toggleParticipantCheck(participant.id);
@@ -1209,12 +1409,22 @@
                     <div class="participant-content">
                         <div class="participant-info">
                             <h3>${participant.name || `Peserta ${participant.id}`}</h3>
-                            <p>Juz ${participant.currentJuz || participant.id} - Hari Ini</p>
-                            ${isCompleted ? '<small>✅ Sudah Selesai</small>' : ''}
+                            <p style="font-weight: 600; color: #FF7D29; margin-bottom: 8px;">
+                                📖 Juz ${juzNumber} (Hal. ${juzDetail.pages})
+                            </p>
+                            <div style="background: #F8F9FA; padding: 8px; border-radius: 6px; margin-bottom: 8px;">
+                                <p style="font-size: 0.85rem; color: #374151; font-weight: 500; margin-bottom: 4px;">
+                                    ${juzDetail.surah}
+                                </p>
+                                <p style="font-size: 0.8rem; color: #6B7280; font-style: italic;">
+                                    ${juzDetail.description}
+                                </p>
+                            </div>
+                            ${isCompleted ? '<small style="color: #10B981; font-weight: 600;">✅ Sudah Selesai</small>' : '<small style="color: #6B7280;">⏳ Belum selesai</small>'}
                         </div>
                         <div class="participant-actions">
-                            <span class="icon ${isCompleted ? 'icon-completed' : 'icon-pending'}">📖</span>
-                            <span class="icon ${isCompleted ? 'icon-completed' : 'icon-pending'}">✅</span>
+                            <span class="icon ${isCompleted ? 'icon-completed' : 'icon-pending'}" style="font-size: 28px;">📖</span>
+                            <span class="icon ${isCompleted ? 'icon-completed' : 'icon-pending'}" style="font-size: 32px;">✅</span>
                         </div>
                     </div>
                 `;
@@ -1222,7 +1432,7 @@
                 grid.appendChild(card);
             });
             
-            console.log(`🎨 Rendered ${participants.length} participants`);
+            console.log(`🎨 Rendered ${participants.length} participants with juz details`);
         }
 
         // Switch tabs
@@ -1240,7 +1450,11 @@
             document.getElementById(tabName + '-tab').classList.add('active');
             
             if (tabName === 'monthly') {
-                renderMonthlyTab();
+                // Ensure month selector is populated when switching to monthly tab
+                setTimeout(() => {
+                    populateMonthSelector();
+                    renderMonthlyTab();
+                }, 100);
             }
         }
 
@@ -1293,6 +1507,8 @@
             const startDate = new Date('2025-06-01');
             const currentMonth = new Date();
             
+            console.log(`📅 Generating months from ${startDate.toDateString()} to ${currentMonth.toDateString()}`);
+            
             while (startDate <= currentMonth) {
                 const monthKey = startDate.toISOString().substring(0, 7);
                 const monthName = startDate.toLocaleDateString('id-ID', {
@@ -1303,7 +1519,8 @@
                 startDate.setMonth(startDate.getMonth() + 1);
             }
             
-            return months;
+            console.log(`📅 Generated ${months.length} months:`, months.map(m => m.name));
+            return months.reverse(); // Latest month first
         }
 
         // Update monthly records
@@ -1429,12 +1646,53 @@
 
         // Cleanup function
         window.addEventListener('beforeunload', () => {
+            // Clear midnight reset timeout
+            if (midnightResetTimeout) {
+                clearTimeout(midnightResetTimeout);
+            }
+            
+            // Unsubscribe from Firebase listeners
             unsubscribeListeners.forEach(unsubscribe => {
                 if (typeof unsubscribe === 'function') {
                     unsubscribe();
                 }
             });
         });
+
+        // Debug functions (available in console)
+        window.debugFunctions = {
+            testReset: () => {
+                console.log('🧪 Manual reset test triggered');
+                performDailyReset();
+            },
+            checkSchedule: () => {
+                const now = new Date();
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+                const timeUntilMidnight = tomorrow.getTime() - now.getTime();
+                
+                console.log('📊 Reset Schedule Info:');
+                console.log(`Current time: ${now.toLocaleString('id-ID')}`);
+                console.log(`Next reset: ${tomorrow.toLocaleString('id-ID')}`);
+                console.log(`Time until reset: ${Math.round(timeUntilMidnight / 1000 / 60)} minutes`);
+                console.log(`Last reset check: ${lastResetCheck}`);
+                console.log(`Current date key: ${getTodayKey()}`);
+            },
+            forceNewDay: () => {
+                console.log('🧪 Force new day simulation');
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                currentDate = tomorrow;
+                performDailyReset();
+            }
+        };
+
+        // Make debug functions available
+        console.log('🔧 Debug functions available:');
+        console.log('- debugFunctions.testReset() - Test reset manually');
+        console.log('- debugFunctions.checkSchedule() - Check reset schedule');
+        console.log('- debugFunctions.forceNewDay() - Simulate new day');
     </script>
 </body>
 </html>
