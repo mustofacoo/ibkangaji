@@ -729,38 +729,38 @@
     </script>
 
     <script>
-        // Application Data - GANTI NAMA PESERTA DI SINI
+        // Application Data - NAMA PESERTA YANG SUDAH DIPERBAIKI
         const participantNames = [
             'Syafiq',      // Peserta 1
-            'Siti',   // Peserta 2  
-            'Muhammad',   // Peserta 3
-            'Fatimah',    // Peserta 4
-            'Abdul',     // Peserta 5
-            'Khadijah',   // Peserta 6
-            'Umar',       // Peserta 7
-            'Maryam',    // Peserta 8
-            'Ali',       // Peserta 9
-            'Said',    // Peserta 10
-            'Yusuf',    // Peserta 11
-            'Zainab',     // Peserta 12
-            'Hamza',      // Peserta 13
-            'Aminah',    // Peserta 14
-            'Khalid',     // Peserta 15
+            'Siti',        // Peserta 2  
+            'Muhammad',    // Peserta 3
+            'Fatimah',     // Peserta 4
+            'Abdul',       // Peserta 5
+            'Khadijah',    // Peserta 6
+            'Umar',        // Peserta 7
+            'Maryam',      // Peserta 8
+            'Ali',         // Peserta 9
+            'Said',        // Peserta 10
+            'Yusuf',       // Peserta 11
+            'Zainab',      // Peserta 12
+            'Hamza',       // Peserta 13
+            'Aminah',      // Peserta 14
+            'Khalid',      // Peserta 15
             'Hafsa',       // Peserta 16
-            'Bilal',      // Peserta 17
-            'Nur',     // Peserta 18
-            'Salman',    // Peserta 19
-            'Ummu',     // Peserta 20
-            'Zaid',  // Peserta 21
-            'Asma',   // Peserta 22
-            'Talhah',    // Peserta 23
+            'Bilal',       // Peserta 17
+            'Nur',         // Peserta 18
+            'Salman',      // Peserta 19
+            'Ummu',        // Peserta 20
+            'Zaid',        // Peserta 21
+            'Asma',        // Peserta 22
+            'Talhah',      // Peserta 23
             'Habibah',     // Peserta 24
-            'Sadil',     // Peserta 25
-            'Saris',  // Peserta 26
+            'Sadil',       // Peserta 25
+            'Saris',       // Peserta 26
             'Abdullah',    // Peserta 27
-            'Juwed',  // Peserta 28
-            'Anas',   // Peserta 29
-            'Umming'        // Peserta 30
+            'Juwed',       // Peserta 28
+            'Anas',        // Peserta 29
+            'Umming'       // Peserta 30
         ];
 
         // Detail Juz dan Ayat - DETAIL BACAAN SETIAP JUZ
@@ -916,6 +916,7 @@
                 description: "An-Naba sampai An-Nas (Juz terakhir)"
             }
         };
+        
         let participants = [];
         let monthlyRecords = {};
         let currentDate = new Date();
@@ -925,6 +926,7 @@
         let unsubscribeListeners = [];
         let lastResetCheck = null;
         let midnightResetTimeout = null;
+        let baseStartDate = new Date('2025-07-01'); // Tanggal mulai program
 
         // Wait for Firebase modules to load
         window.initAppAfterFirebase = function() {
@@ -1022,7 +1024,7 @@
             switch(status) {
                 case 'connected':
                     statusElement.style.background = 'linear-gradient(135deg, #10B981, #34D399)';
-                    actionsElement.style.display = 'none'; // Hide actions when connected
+                    actionsElement.style.display = 'none';
                     break;
                 case 'offline':
                     statusElement.style.background = 'linear-gradient(135deg, #F59E0B, #FBBF24)';
@@ -1063,6 +1065,8 @@
                     // Only update if we have data from Firebase, and don't replace initialized data unnecessarily
                     if (firebaseParticipants.length === 30) {
                         participants = firebaseParticipants;
+                        // Pastikan juz update setelah load
+                        updateAllParticipantsJuz();
                         renderDailyTab();
                         console.log('📡 Real-time update: participants loaded from Firebase');
                     } else if (firebaseParticipants.length > 0) {
@@ -1073,6 +1077,7 @@
                                 participants[existingIndex] = fbParticipant;
                             }
                         });
+                        updateAllParticipantsJuz();
                         renderDailyTab();
                         console.log(`📡 Partial update: ${firebaseParticipants.length} participants updated from Firebase`);
                     }
@@ -1179,6 +1184,9 @@
                     });
                 }
 
+                // Update juz setelah load data
+                updateAllParticipantsJuz();
+
                 // Load monthly records
                 const monthlySnapshot = await window.firebaseModules.getDocs(
                     window.firebaseModules.collection(db, 'monthlyRecords')
@@ -1205,7 +1213,7 @@
         function initApp() {
             initializeParticipants();
             updateCurrentDate();
-            setupDailyReset(); // Setup reset scheduler
+            setupDailyReset();
             populateMonthSelector();
             renderDailyTab();
             
@@ -1214,34 +1222,46 @@
                 loadFromLocalStorage();
             }
             
-            // Debug: Log current state
             console.log('✅ App initialized');
             console.log(`📅 Current date: ${currentDate.toLocaleString('id-ID')}`);
             console.log(`📋 Participants initialized: ${participants.length}`);
         }
 
-        // Initialize participants
+        // PERBAIKAN: Initialize participants dengan nama yang benar
         function initializeParticipants() {
-            // Always initialize all 30 participants first
-            const today = new Date();
-            const dayOfYear = getDayOfYear(today);
-            
             participants = Array.from({ length: 30 }, (_, i) => ({
                 id: i + 1,
-                name: participantNames[i] || `Peserta ${i + 1}`, // Use custom names
+                name: participantNames[i], // Gunakan nama dari array
                 dailyProgress: {},
-                currentJuz: ((i + dayOfYear - 1) % 30) + 1,
-                lastUpdated: today.toISOString().split('T')[0]
+                currentJuz: 1, // Set default dulu
+                lastUpdated: currentDate.toISOString().split('T')[0]
             }));
             
-            console.log('✅ Initialized 30 participants with custom names');
+            // Update juz berdasarkan tanggal saat ini
+            updateAllParticipantsJuz();
+            
+            console.log('✅ Initialized 30 participants with custom names and correct juz rotation');
         }
 
-        // Get day of year
-        function getDayOfYear(date) {
-            const start = new Date(date.getFullYear(), 0, 0);
-            const diff = date - start;
-            return Math.floor(diff / (1000 * 60 * 60 * 24));
+        // PERBAIKAN: Fungsi untuk menghitung juz berdasarkan hari dari tanggal mulai
+        function calculateJuzForParticipant(participantId, currentDate) {
+            // Hitung hari sejak tanggal mulai program
+            const diffTime = currentDate - baseStartDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            // Formula rotasi: (participant_id - 1 + days_passed) % 30 + 1
+            const juz = ((participantId - 1 + diffDays) % 30) + 1;
+            
+            console.log(`📖 Participant ${participantId}: Day ${diffDays} from start → Juz ${juz}`);
+            return juz;
+        }
+
+        // PERBAIKAN: Update juz untuk semua participant
+        function updateAllParticipantsJuz() {
+            participants.forEach(participant => {
+                participant.currentJuz = calculateJuzForParticipant(participant.id, currentDate);
+            });
+            console.log('🔄 Updated juz for all participants based on current date');
         }
 
         // Update current date display
@@ -1257,13 +1277,10 @@
 
         // Setup daily reset
         function setupDailyReset() {
-            // Set initial check
             lastResetCheck = getTodayKey();
-            
-            // Schedule exact midnight reset
             scheduleNextMidnightReset();
             
-            // Also check every minute as backup
+            // Backup check every minute
             setInterval(() => {
                 const now = new Date();
                 const today = now.toISOString().split('T')[0];
@@ -1274,11 +1291,10 @@
                 }
                 
                 lastResetCheck = today;
-            }, 60000); // Check every minute as backup
+            }, 60000);
         }
 
         function scheduleNextMidnightReset() {
-            // Clear any existing timeout
             if (midnightResetTimeout) {
                 clearTimeout(midnightResetTimeout);
             }
@@ -1286,7 +1302,7 @@
             const now = new Date();
             const tomorrow = new Date(now);
             tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(0, 0, 0, 0); // Set to exactly 00:00:00
+            tomorrow.setHours(0, 0, 0, 0);
             
             const timeUntilMidnight = tomorrow.getTime() - now.getTime();
             
@@ -1294,14 +1310,10 @@
             console.log(`⏰ Next reset scheduled for: ${tomorrow.toLocaleString('id-ID')}`);
             console.log(`⏰ Time until reset: ${Math.round(timeUntilMidnight / 1000 / 60)} minutes`);
             
-            // Schedule the reset for exactly midnight
             midnightResetTimeout = setTimeout(() => {
                 console.log('🌙 MIDNIGHT RESET TRIGGERED at exactly 00:00');
                 performDailyReset();
-                
-                // Schedule the next midnight reset (24 hours later)
                 scheduleNextMidnightReset();
-                
             }, timeUntilMidnight);
         }
 
@@ -1314,13 +1326,13 @@
             currentDate = now;
             lastResetCheck = getTodayKey();
             
-            // Update juz rotation for new day
-            updateJuzRotation();
+            // PERBAIKAN: Update juz rotation untuk hari baru
+            updateAllParticipantsJuz();
             
             // Update date display
             updateCurrentDate();
             
-            // Re-render participants with new juz assignments
+            // Re-render participants dengan juz assignments baru
             renderDailyTab();
             
             // Save updated participants
@@ -1329,7 +1341,6 @@
             });
             saveToLocalStorage();
             
-            // Show notification (if Firebase status element exists)
             updateFirebaseStatus('connected', 
                 `🌅 Reset berhasil pukul ${now.toLocaleTimeString('id-ID')} | Project: odojfix`);
             
@@ -1338,14 +1349,6 @@
 
         function getTodayKey() {
             return new Date().toISOString().split('T')[0];
-        }
-
-        // Update juz rotation
-        function updateJuzRotation() {
-            const dayOfYear = getDayOfYear(currentDate);
-            participants.forEach(participant => {
-                participant.currentJuz = ((participant.id - 1 + dayOfYear - 1) % 30) + 1;
-            });
         }
 
         // Toggle participant check
@@ -1371,11 +1374,11 @@
             }
         }
 
-        // Render daily tab
+        // PERBAIKAN: Render daily tab dengan nama dan juz yang benar
         function renderDailyTab() {
             const today = currentDate.toISOString().split('T')[0];
             
-            // Ensure we have 30 participants
+            // Pastikan ada 30 participants
             if (participants.length !== 30) {
                 console.warn(`⚠️ Expected 30 participants, found ${participants.length}. Re-initializing...`);
                 initializeParticipants();
@@ -1394,7 +1397,7 @@
             
             participants.forEach(participant => {
                 const isCompleted = participant.dailyProgress && participant.dailyProgress[today];
-                const juzNumber = participant.currentJuz || participant.id;
+                const juzNumber = participant.currentJuz;
                 const juzDetail = juzDetails[juzNumber] || { 
                     surah: "Detail tidak tersedia", 
                     pages: "?",
@@ -1408,7 +1411,7 @@
                 card.innerHTML = `
                     <div class="participant-content">
                         <div class="participant-info">
-                            <h3>${participant.name || `Peserta ${participant.id}`}</h3>
+                            <h3>${participant.name}</h3>
                             <p style="font-weight: 600; color: #FF7D29; margin-bottom: 8px;">
                                 📖 Juz ${juzNumber} (Hal. ${juzDetail.pages})
                             </p>
@@ -1432,7 +1435,7 @@
                 grid.appendChild(card);
             });
             
-            console.log(`🎨 Rendered ${participants.length} participants with juz details`);
+            console.log(`🎨 Rendered ${participants.length} participants with names and correct juz rotation`);
         }
 
         // Switch tabs
@@ -1450,7 +1453,6 @@
             document.getElementById(tabName + '-tab').classList.add('active');
             
             if (tabName === 'monthly') {
-                // Ensure month selector is populated when switching to monthly tab
                 setTimeout(() => {
                     populateMonthSelector();
                     renderMonthlyTab();
@@ -1469,13 +1471,11 @@
             const months = getAvailableMonths();
             const currentMonthKey = currentDate.toISOString().substring(0, 7);
             
-            // Store current selection
             const currentSelection = selector.value;
             
             selector.innerHTML = '';
             
             if (months.length === 0) {
-                // Fallback if no months generated
                 const fallbackMonth = {
                     key: currentMonthKey,
                     name: currentDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'long' })
@@ -1488,7 +1488,6 @@
                 option.value = month.key;
                 option.textContent = month.name;
                 
-                // Restore previous selection, or select current month by default
                 if ((currentSelection && month.key === currentSelection) || 
                     (!currentSelection && month.key === currentMonthKey)) {
                     option.selected = true;
@@ -1520,7 +1519,7 @@
             }
             
             console.log(`📅 Generated ${months.length} months:`, months.map(m => m.name));
-            return months.reverse(); // Latest month first
+            return months.reverse();
         }
 
         // Update monthly records
@@ -1622,6 +1621,8 @@
                 const localParticipants = JSON.parse(savedParticipants);
                 if (participants.length === 0) {
                     participants = localParticipants;
+                    // Update juz setelah load dari localStorage
+                    updateAllParticipantsJuz();
                 }
             }
             
@@ -1637,7 +1638,7 @@
                 const today = new Date();
                 if (savedDateObj.toDateString() !== today.toDateString()) {
                     currentDate = today;
-                    updateJuzRotation();
+                    updateAllParticipantsJuz();
                 }
             }
             
@@ -1646,12 +1647,10 @@
 
         // Cleanup function
         window.addEventListener('beforeunload', () => {
-            // Clear midnight reset timeout
             if (midnightResetTimeout) {
                 clearTimeout(midnightResetTimeout);
             }
             
-            // Unsubscribe from Firebase listeners
             unsubscribeListeners.forEach(unsubscribe => {
                 if (typeof unsubscribe === 'function') {
                     unsubscribe();
@@ -1685,6 +1684,23 @@
                 tomorrow.setDate(tomorrow.getDate() + 1);
                 currentDate = tomorrow;
                 performDailyReset();
+            },
+            checkJuzRotation: () => {
+                console.log('📖 Current Juz Assignments:');
+                participants.forEach(p => {
+                    const expectedJuz = calculateJuzForParticipant(p.id, currentDate);
+                    console.log(`${p.name} (ID: ${p.id}): Current Juz ${p.currentJuz} | Expected: ${expectedJuz} | Match: ${p.currentJuz === expectedJuz ? '✅' : '❌'}`);
+                });
+                
+                const diffTime = currentDate - baseStartDate;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                console.log(`📅 Days since start (${baseStartDate.toDateString()}): ${diffDays}`);
+            },
+            updateJuzNow: () => {
+                console.log('🔄 Manually updating all participant juz...');
+                updateAllParticipantsJuz();
+                renderDailyTab();
+                console.log('✅ Juz updated and display refreshed');
             }
         };
 
@@ -1693,6 +1709,8 @@
         console.log('- debugFunctions.testReset() - Test reset manually');
         console.log('- debugFunctions.checkSchedule() - Check reset schedule');
         console.log('- debugFunctions.forceNewDay() - Simulate new day');
+        console.log('- debugFunctions.checkJuzRotation() - Check juz assignments');
+        console.log('- debugFunctions.updateJuzNow() - Update juz immediately');
     </script>
 </body>
 </html>
