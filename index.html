@@ -730,6 +730,8 @@
         let isFirebaseConnected = false;
         let firebaseApp = null;
         let unsubscribeListeners = [];
+        let lastResetCheck = null;
+        let midnightResetTimeout = null;
 
         // Wait for Firebase modules to load
         window.initAppAfterFirebase = function() {
@@ -1010,7 +1012,7 @@
         function initApp() {
             initializeParticipants();
             updateCurrentDate();
-            setupDailyReset();
+            setupDailyReset(); // Setup reset scheduler
             populateMonthSelector();
             renderDailyTab();
             
@@ -1018,6 +1020,11 @@
             if (!isFirebaseConnected) {
                 loadFromLocalStorage();
             }
+            
+            // Debug: Log current state
+            console.log('✅ App initialized');
+            console.log(`📅 Current date: ${currentDate.toLocaleString('id-ID')}`);
+            console.log(`📋 Participants initialized: ${participants.length}`);
         }
 
         // Initialize participants
@@ -1057,24 +1064,87 @@
 
         // Setup daily reset
         function setupDailyReset() {
+            // Set initial check
+            lastResetCheck = getTodayKey();
+            
+            // Schedule exact midnight reset
+            scheduleNextMidnightReset();
+            
+            // Also check every minute as backup
             setInterval(() => {
                 const now = new Date();
                 const today = now.toISOString().split('T')[0];
-                const currentDay = currentDate.toISOString().split('T')[0];
                 
-                if (today !== currentDay) {
-                    currentDate = now;
-                    updateJuzRotation();
-                    updateCurrentDate();
-                    renderDailyTab();
-                    
-                    // Save to both Firebase and localStorage
-                    participants.forEach(participant => {
-                        saveParticipantToFirebase(participant);
-                    });
-                    saveToLocalStorage();
+                if (lastResetCheck && lastResetCheck !== today) {
+                    console.log('🔄 Date changed detected via backup check, performing reset');
+                    performDailyReset();
                 }
-            }, 60000); // Check every minute
+                
+                lastResetCheck = today;
+            }, 60000); // Check every minute as backup
+        }
+
+        function scheduleNextMidnightReset() {
+            // Clear any existing timeout
+            if (midnightResetTimeout) {
+                clearTimeout(midnightResetTimeout);
+            }
+            
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0); // Set to exactly 00:00:00
+            
+            const timeUntilMidnight = tomorrow.getTime() - now.getTime();
+            
+            console.log(`⏰ Current time: ${now.toLocaleString('id-ID')}`);
+            console.log(`⏰ Next reset scheduled for: ${tomorrow.toLocaleString('id-ID')}`);
+            console.log(`⏰ Time until reset: ${Math.round(timeUntilMidnight / 1000 / 60)} minutes`);
+            
+            // Schedule the reset for exactly midnight
+            midnightResetTimeout = setTimeout(() => {
+                console.log('🌙 MIDNIGHT RESET TRIGGERED at exactly 00:00');
+                performDailyReset();
+                
+                // Schedule the next midnight reset (24 hours later)
+                scheduleNextMidnightReset();
+                
+            }, timeUntilMidnight);
+        }
+
+        function performDailyReset() {
+            console.log('🔄 Performing daily reset...');
+            const now = new Date();
+            console.log(`🕐 Reset performed at: ${now.toLocaleString('id-ID')}`);
+            
+            // Update current date
+            currentDate = now;
+            lastResetCheck = getTodayKey();
+            
+            // Update juz rotation for new day
+            updateJuzRotation();
+            
+            // Update date display
+            updateCurrentDate();
+            
+            // Re-render participants with new juz assignments
+            renderDailyTab();
+            
+            // Save updated participants
+            participants.forEach(participant => {
+                saveParticipantToFirebase(participant);
+            });
+            saveToLocalStorage();
+            
+            // Show notification (if Firebase status element exists)
+            updateFirebaseStatus('connected', 
+                `🌅 Reset berhasil pukul ${now.toLocaleTimeString('id-ID')} | Project: odojfix`);
+            
+            console.log('✅ Daily reset completed successfully');
+        }
+
+        function getTodayKey() {
+            return new Date().toISOString().split('T')[0];
         }
 
         // Update juz rotation
@@ -1177,17 +1247,44 @@
         // Populate month selector
         function populateMonthSelector() {
             const selector = document.getElementById('month-selector');
+            if (!selector) {
+                console.warn('Month selector not found, will try again later');
+                return;
+            }
+            
             const months = getAvailableMonths();
+            const currentMonthKey = currentDate.toISOString().substring(0, 7);
+            
+            // Store current selection
+            const currentSelection = selector.value;
             
             selector.innerHTML = '';
+            
+            if (months.length === 0) {
+                // Fallback if no months generated
+                const fallbackMonth = {
+                    key: currentMonthKey,
+                    name: currentDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'long' })
+                };
+                months.push(fallbackMonth);
+            }
+            
             months.forEach(month => {
                 const option = document.createElement('option');
                 option.value = month.key;
                 option.textContent = month.name;
+                
+                // Restore previous selection, or select current month by default
+                if ((currentSelection && month.key === currentSelection) || 
+                    (!currentSelection && month.key === currentMonthKey)) {
+                    option.selected = true;
+                }
+                
                 selector.appendChild(option);
             });
             
-            selector.value = currentDate.toISOString().substring(0, 7);
+            console.log(`📅 Generated ${months.length} months for selector:`, 
+                       months.map(m => m.name));
         }
 
         // Get available months
