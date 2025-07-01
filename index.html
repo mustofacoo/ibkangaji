@@ -457,134 +457,6 @@
     </style>
 </head>
 <body>
-    <!-- Firebase Configuration Modal -->
-    <div id="firebase-config-modal" style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-    ">
-        <div style="
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        ">
-            <h2 style="color: #7B4019; margin-bottom: 20px;">🔧 Setup Firebase</h2>
-            <p style="color: #666; margin-bottom: 20px;">
-                Masukkan konfigurasi Firebase untuk fitur real-time sync.
-                <br><small>Jika tidak ada, klik "Skip" untuk mode offline.</small>
-            </p>
-            
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; color: #374151; font-weight: 600; margin-bottom: 5px;">API Key:</label>
-                <input type="text" id="apiKey" placeholder="AIzaSyC..." style="
-                    width: 100%;
-                    padding: 8px 12px;
-                    border: 2px solid #E5E7EB;
-                    border-radius: 8px;
-                    font-size: 14px;
-                ">
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; color: #374151; font-weight: 600; margin-bottom: 5px;">Auth Domain:</label>
-                <input type="text" id="authDomain" placeholder="your-project.firebaseapp.com" style="
-                    width: 100%;
-                    padding: 8px 12px;
-                    border: 2px solid #E5E7EB;
-                    border-radius: 8px;
-                    font-size: 14px;
-                ">
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; color: #374151; font-weight: 600; margin-bottom: 5px;">Project ID:</label>
-                <input type="text" id="projectId" placeholder="your-project-id" style="
-                    width: 100%;
-                    padding: 8px 12px;
-                    border: 2px solid #E5E7EB;
-                    border-radius: 8px;
-                    font-size: 14px;
-                ">
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; color: #374151; font-weight: 600; margin-bottom: 5px;">Storage Bucket:</label>
-                <input type="text" id="storageBucket" placeholder="your-project.appspot.com" style="
-                    width: 100%;
-                    padding: 8px 12px;
-                    border: 2px solid #E5E7EB;
-                    border-radius: 8px;
-                    font-size: 14px;
-                ">
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; color: #374151; font-weight: 600; margin-bottom: 5px;">Messaging Sender ID:</label>
-                <input type="text" id="messagingSenderId" placeholder="123456789" style="
-                    width: 100%;
-                    padding: 8px 12px;
-                    border: 2px solid #E5E7EB;
-                    border-radius: 8px;
-                    font-size: 14px;
-                ">
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; color: #374151; font-weight: 600; margin-bottom: 5px;">App ID:</label>
-                <input type="text" id="appId" placeholder="1:123456789:web:abc123" style="
-                    width: 100%;
-                    padding: 8px 12px;
-                    border: 2px solid #E5E7EB;
-                    border-radius: 8px;
-                    font-size: 14px;
-                ">
-            </div>
-            
-            <div style="display: flex; gap: 10px;">
-                <button onclick="initializeFirebase()" style="
-                    flex: 1;
-                    padding: 12px;
-                    background: linear-gradient(135deg, #FF7D29, #FFBF78);
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    font-weight: 600;
-                    cursor: pointer;
-                ">Connect Firebase</button>
-                <button onclick="skipFirebase()" style="
-                    flex: 1;
-                    padding: 12px;
-                    background: #6B7280;
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    font-weight: 600;
-                    cursor: pointer;
-                ">Skip (Offline Mode)</button>
-            </div>
-            
-            <div style="margin-top: 15px; padding: 10px; background: #EBF8FF; border-radius: 8px;">
-                <small style="color: #1E40AF;">
-                    <strong>Cara mendapatkan config Firebase:</strong><br>
-                    1. Kunjungi <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a><br>
-                    2. Buat project baru atau pilih yang ada<br>
-                    3. Settings > Project settings > Your apps<br>
-                    4. Add app > Web app > Copy config
-                </small>
-            </div>
-        </div>
-    </div>
     <div class="app-container">
         <!-- Header -->
         <div class="header">
@@ -606,15 +478,6 @@
             <div class="firebase-status" id="firebase-status">
                 <span id="firebase-status-text">Status: 🟡 Checking Firebase...</span>
                 <div id="firebase-actions" style="margin-top: 10px; display: none;">
-                    <button onclick="showFirebaseConfig()" style="
-                        background: rgba(255,255,255,0.2);
-                        color: white;
-                        border: none;
-                        padding: 5px 10px;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        margin-right: 10px;
-                    ">⚙️ Setup Firebase</button>
                     <button onclick="testFirebaseConnection()" style="
                         background: rgba(255,255,255,0.2);
                         color: white;
@@ -930,20 +793,19 @@
 
         // Wait for Firebase modules to load
         window.initAppAfterFirebase = function() {
-            // Use the provided Firebase config
+            // Firebase config untuk project ibkangaji
             const firebaseConfig = {
-          const firebaseConfig = {
-          apiKey: "AIzaSyB2GeZEZ2m2Qwq4nEzmeLlIrhN61DQusvg",
-          authDomain: "ibkangaji.firebaseapp.com",
-          projectId: "ibkangaji",
-          storageBucket: "ibkangaji.firebasestorage.app",
-          messagingSenderId: "401662109480",
-          appId: "1:401662109480:web:768935620ffc698cd8521d"
-        };
+                apiKey: "AIzaSyB2GeZEZ2m2Qwq4nEzmeLlIrhN61DQusvg",
+                authDomain: "ibkangaji.firebaseapp.com",
+                projectId: "ibkangaji",
+                storageBucket: "ibkangaji.firebasestorage.app",
+                messagingSenderId: "401662109480",
+                appId: "1:401662109480:web:768935620ffc698cd8521d"
+            };
             
             // Auto-connect to Firebase
             connectToFirebase(firebaseConfig);
-            hideFirebaseConfig(); // Hide the config modal since we're auto-connecting
+            hideFirebaseConfig();
             
             initApp();
         };
@@ -954,37 +816,15 @@
         }
 
         function hideFirebaseConfig() {
-            document.getElementById('firebase-config-modal').style.display = 'none';
+            // Modal sudah dihapus, tidak perlu fungsi ini lagi
         }
 
         function initializeFirebase() {
-            const config = {
-                apiKey: document.getElementById('apiKey').value.trim(),
-                authDomain: document.getElementById('authDomain').value.trim(),
-                projectId: document.getElementById('projectId').value.trim(),
-                storageBucket: document.getElementById('storageBucket').value.trim(),
-                messagingSenderId: document.getElementById('messagingSenderId').value.trim(),
-                appId: document.getElementById('appId').value.trim()
-            };
-
-            // Validate config
-            if (!config.apiKey || !config.projectId || !config.appId) {
-                alert('❌ API Key, Project ID, dan App ID wajib diisi!');
-                return;
-            }
-
-            // Save config to localStorage
-            localStorage.setItem('firebaseConfig', JSON.stringify(config));
-            
-            // Connect to Firebase
-            connectToFirebase(config);
-            hideFirebaseConfig();
+            // Fungsi ini tidak diperlukan lagi karena config sudah hardcoded
         }
 
         function skipFirebase() {
-            hideFirebaseConfig();
-            updateFirebaseStatus('offline', '🟡 Mode Offline - Data tersimpan di browser saja');
-            initApp();
+            // Fungsi ini tidak diperlukan lagi karena config sudah hardcoded
         }
 
         function connectToFirebase(config) {
@@ -994,7 +834,7 @@
                 db = window.firebaseModules.getFirestore(firebaseApp);
                 isFirebaseConnected = true;
                 
-                updateFirebaseStatus('connected', '🟢 CENTANG SESUAI NAMA');
+                updateFirebaseStatus('connected', '🟢 CENTANG SESUAI NAMA | Project: ibkangaji');
                 
                 // Setup real-time listeners
                 setupFirebaseListeners();
@@ -1002,7 +842,7 @@
                 // Load data from Firebase
                 loadFromFirebase();
                 
-                console.log('✅ Firebase connected successfully to project: odojfix');
+                console.log('✅ Firebase connected successfully to project: ibkangaji');
                 
             } catch (error) {
                 console.error('❌ Firebase connection failed:', error);
@@ -1040,7 +880,7 @@
 
         function testFirebaseConnection() {
             if (isFirebaseConnected) {
-                alert('✅ Firebase sudah terhubung dengan baik!\n\nProject: odojfix\nStatus: Real-time sync aktif');
+                alert('✅ Firebase sudah terhubung dengan baik!\n\nProject: ibkangaji\nStatus: Real-time sync aktif');
             } else {
                 alert('❌ Firebase tidak terhubung.\n\nMenggunakan mode offline.\nData tersimpan di browser lokal saja.');
             }
@@ -1370,7 +1210,7 @@
             saveToLocalStorage();
             
             updateFirebaseStatus('connected', 
-                `🌅 Reset berhasil pukul ${now.toLocaleTimeString('id-ID')} | Project: odojfix`);
+                `🌅 Reset berhasil pukul ${now.toLocaleTimeString('id-ID')} | Project: ibkangaji`);
             
             console.log('✅ Daily reset completed successfully');
         }
@@ -1757,12 +1597,39 @@
                     console.log('✅ All participants have proper names');
                 }
             },
-            forceReinitialize: () => {
-                console.log('🔄 Force reinitializing participants...');
-                participants = []; // Clear existing
+            forceFixNames: () => {
+                console.log('🔧 Force fixing participant names...');
+                console.log('📝 Available names:', participantNames);
+                
+                // Paksa update semua nama
+                participants.forEach((participant, index) => {
+                    const oldName = participant.name;
+                    participant.name = participantNames[index] || `Peserta ${participant.id}`;
+                    console.log(`${participant.id}. "${oldName}" → "${participant.name}"`);
+                });
+                
+                // Save ke Firebase dan localStorage
+                participants.forEach(participant => {
+                    saveParticipantToFirebase(participant);
+                });
+                saveToLocalStorage();
+                
+                // Re-render
+                renderDailyTab();
+                
+                console.log('✅ Names fixed and saved to Firebase + localStorage');
+            },
+            clearLocalStorageOnly: () => {
+                console.log('🗑️ Clearing localStorage only...');
+                localStorage.clear();
+                
+                // Reinitialize dengan nama yang benar
+                participants = [];
                 initializeParticipants();
                 renderDailyTab();
-                console.log('✅ Participants reinitialized');
+                
+                console.log('✅ localStorage cleared, app reinitialized with correct names');
+                console.log('📋 Names should now show:', participants.slice(0, 5).map(p => p.name));
             },
         };
 
