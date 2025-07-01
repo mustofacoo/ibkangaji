@@ -1152,12 +1152,18 @@
                         firebaseParticipants.push(doc.data());
                     });
                     
-                    // Sort by ID and only use if we have all 30 participants
+                    // Sort by ID
                     firebaseParticipants.sort((a, b) => a.id - b.id);
                     
                     if (firebaseParticipants.length === 30) {
                         participants = firebaseParticipants;
-                        console.log('📥 All 30 participants loaded from Firebase');
+                        // PERBAIKAN: Paksa update nama dengan nama yang benar
+                        participants.forEach((participant, index) => {
+                            if (participantNames[index]) {
+                                participant.name = participantNames[index];
+                            }
+                        });
+                        console.log('📥 All 30 participants loaded from Firebase and names updated');
                     } else {
                         // If partial data, merge with initialized participants
                         console.log(`📥 ${firebaseParticipants.length} participants found in Firebase, initializing rest`);
@@ -1165,6 +1171,10 @@
                             const existingIndex = participants.findIndex(p => p.id === fbParticipant.id);
                             if (existingIndex !== -1) {
                                 participants[existingIndex] = fbParticipant;
+                                // PERBAIKAN: Paksa update nama
+                                if (participantNames[existingIndex]) {
+                                    participants[existingIndex].name = participantNames[existingIndex];
+                                }
                             }
                         });
                         
@@ -1201,6 +1211,11 @@
                     monthlyRecords = { ...monthlyRecords, ...firebaseRecords };
                     console.log('📥 Monthly records loaded from Firebase');
                 }
+
+                // PERBAIKAN: Paksa save nama yang sudah diperbaiki ke Firebase
+                participants.forEach(participant => {
+                    saveParticipantToFirebase(participant);
+                });
 
                 renderDailyTab();
                 
@@ -1642,8 +1657,15 @@
                 const localParticipants = JSON.parse(savedParticipants);
                 if (participants.length === 0) {
                     participants = localParticipants;
+                    // PERBAIKAN: Paksa update nama dengan nama yang benar
+                    participants.forEach((participant, index) => {
+                        if (participantNames[index]) {
+                            participant.name = participantNames[index];
+                        }
+                    });
                     // Update juz setelah load dari localStorage
                     updateAllParticipantsJuz();
+                    console.log('📥 Participants loaded from localStorage and names updated');
                 }
             }
             
@@ -1717,12 +1739,30 @@
                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 console.log(`📅 Days since start (${baseStartDate.toDateString()}): ${diffDays}`);
             },
-            updateJuzNow: () => {
-                console.log('🔄 Manually updating all participant juz...');
-                updateAllParticipantsJuz();
+            checkNamesDebug: () => {
+                console.log('🔍 Debugging nama peserta:');
+                console.log('📝 participantNames array:', participantNames);
+                console.log('📝 participantNames length:', participantNames.length);
+                console.log('👥 Current participants:');
+                participants.forEach((p, i) => {
+                    console.log(`  ${i + 1}. ID: ${p.id} | Name: "${p.name}" | From array: "${participantNames[i]}" | Juz: ${p.currentJuz}`);
+                });
+                
+                // Check if names are properly assigned
+                const missingNames = participants.filter(p => !p.name || p.name.startsWith('Peserta'));
+                if (missingNames.length > 0) {
+                    console.warn('⚠️ Found participants with missing names:', missingNames);
+                } else {
+                    console.log('✅ All participants have proper names');
+                }
+            },
+            forceReinitialize: () => {
+                console.log('🔄 Force reinitializing participants...');
+                participants = []; // Clear existing
+                initializeParticipants();
                 renderDailyTab();
-                console.log('✅ Juz updated and display refreshed');
-            }
+                console.log('✅ Participants reinitialized');
+            },
         };
 
         // Make debug functions available
