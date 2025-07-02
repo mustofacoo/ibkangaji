@@ -16,7 +16,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', sans-serif;
             background: linear-gradient(135deg, #FFEEA9 0%, #FFBF78 25%, #FF7D29 75%, #7B4019 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
         }
 
         .app-container {
@@ -26,56 +26,61 @@
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
-            padding: 30px;
+            padding: 20px;
         }
 
         /* Header */
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .main-title {
-            font-size: 3rem;
+            font-size: clamp(1.5rem, 5vw, 3rem);
             font-weight: 800;
             background: linear-gradient(135deg, #7B4019, #FF7D29, #FFBF78);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 10px;
+            line-height: 1.2;
         }
 
         .subtitle {
             color: #666;
-            font-size: 1.1rem;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
         }
 
         /* Navigation Tabs */
         .nav-container {
             display: flex;
             justify-content: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .nav-tabs {
             background: rgba(255, 255, 255, 0.9);
-            padding: 8px;
+            padding: 6px;
             border-radius: 15px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             display: flex;
-            gap: 5px;
+            gap: 3px;
+            width: 100%;
+            max-width: 400px;
         }
 
         .nav-tab {
-            padding: 12px 24px;
+            padding: 12px 20px;
             border: none;
             border-radius: 10px;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
             cursor: pointer;
             transition: all 0.3s ease;
             background: transparent;
             color: #666;
+            flex: 1;
+            text-align: center;
         }
 
         .nav-tab.active {
@@ -101,25 +106,26 @@
 
         /* Firebase Status */
         .firebase-status {
-            padding: 15px;
+            padding: 12px;
             border-radius: 12px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             font-weight: 600;
             text-align: center;
             background: linear-gradient(135deg, #F59E0B, #FBBF24);
             color: white;
+            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
         }
 
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
         .stat-card {
-            padding: 25px;
+            padding: 20px;
             border-radius: 15px;
             background: white;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
@@ -128,8 +134,8 @@
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
         }
 
         .stat-card.orange {
@@ -150,57 +156,60 @@
         .stat-content {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .stat-icon {
             color: #FF7D29;
-            font-size: 24px;
+            font-size: clamp(20px, 5vw, 24px);
+            flex-shrink: 0;
         }
 
         .stat-text {
             color: #7B4019;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            line-height: 1.3;
         }
 
         /* Daily Info */
         .daily-info {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .info-card {
             background: linear-gradient(135deg, #EBF8FF, #DBEAFE);
             border: 1px solid #93C5FD;
             border-radius: 12px;
-            padding: 20px;
+            padding: 16px;
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
         }
 
         .info-card h4 {
             color: #1E40AF;
             font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 10px;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            margin-bottom: 8px;
         }
 
         .info-card p {
             color: #1E3A8A;
-            font-size: 0.9rem;
-            margin: 5px 0;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            margin: 4px 0;
             font-weight: 500;
+            line-height: 1.4;
         }
 
-        /* Participants Grid - Enhanced */
+        /* Participants Grid - Enhanced for Mobile */
         .participants-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
         }
 
         .participant-card {
-            padding: 20px;
-            border-radius: 15px;
+            padding: 16px;
+            border-radius: 12px;
             border: 2px solid #E5E7EB;
             background: white;
             cursor: pointer;
@@ -211,8 +220,12 @@
 
         .participant-card:hover {
             border-color: #FF7D29;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(255, 125, 41, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 125, 41, 0.2);
+        }
+
+        .participant-card:active {
+            transform: translateY(0);
         }
 
         .participant-card.completed {
@@ -224,40 +237,64 @@
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
+            gap: 12px;
         }
 
         .participant-info {
             flex: 1;
-            margin-right: 15px;
+            min-width: 0; /* For text truncation */
         }
 
         .participant-info h3 {
             font-weight: 600;
             color: #1F2937;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
+            margin-bottom: 6px;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
         }
 
         .participant-info p {
             color: #6B7280;
-            font-size: 0.9rem;
-            margin-bottom: 4px;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            margin-bottom: 3px;
         }
 
         .participant-info small {
             font-weight: 600;
+            font-size: clamp(0.75rem, 2vw, 0.85rem);
+        }
+
+        .juz-info {
+            background: #F8F9FA;
+            padding: 8px;
+            border-radius: 6px;
+            margin: 6px 0;
+        }
+
+        .juz-info p {
+            font-size: clamp(0.75rem, 2vw, 0.85rem);
+            color: #374151;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .juz-info .description {
+            font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+            color: #6B7280;
+            font-style: italic;
+            line-height: 1.3;
         }
 
         .participant-actions {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             flex-shrink: 0;
         }
 
         .icon {
             transition: all 0.3s ease;
+            font-size: clamp(20px, 4vw, 28px);
         }
 
         .icon-completed {
@@ -272,28 +309,30 @@
         .month-selector {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 25px;
             flex-wrap: wrap;
         }
 
         .month-selector label {
             color: #374151;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
         }
 
         .month-selector select {
-            padding: 12px 16px;
+            padding: 10px 14px;
             border: 2px solid #E5E7EB;
             border-radius: 10px;
             background: white;
             color: #374151;
             font-weight: 500;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
             cursor: pointer;
             transition: all 0.3s ease;
-            min-width: 200px;
+            min-width: 160px;
+            flex: 1;
+            max-width: 300px;
         }
 
         .month-selector select:focus {
@@ -305,13 +344,13 @@
         /* Monthly Stats */
         .monthly-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
         }
 
         .monthly-stat-card {
-            padding: 30px;
+            padding: 25px;
             border-radius: 15px;
             background: white;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
@@ -320,8 +359,8 @@
         }
 
         .monthly-stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
         }
 
         .monthly-stat-card.orange {
@@ -335,18 +374,18 @@
         .monthly-stat-header {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
         .monthly-stat-header h3 {
             color: #7B4019;
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
         }
 
         .monthly-stat-value {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
             font-weight: 800;
             color: #FF7D29;
         }
@@ -354,7 +393,7 @@
         /* Progress Section */
         .progress-section {
             background: white;
-            padding: 30px;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(255, 125, 41, 0.1);
@@ -363,18 +402,18 @@
         .progress-section h3 {
             color: #1F2937;
             font-weight: 700;
-            font-size: 1.3rem;
-            margin-bottom: 25px;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            margin-bottom: 20px;
         }
 
         .progress-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
         }
 
         .progress-item {
-            padding: 20px;
+            padding: 16px;
             background: #F9FAFB;
             border-radius: 12px;
             border: 1px solid #E5E7EB;
@@ -390,18 +429,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .progress-name {
             font-weight: 600;
             color: #374151;
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
         }
 
         .progress-count {
             color: #6B7280;
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
         }
 
         .progress-bar {
@@ -410,7 +449,7 @@
             background: #E5E7EB;
             border-radius: 4px;
             overflow: hidden;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .progress-fill {
@@ -422,38 +461,119 @@
 
         .progress-percentage {
             color: #6B7280;
-            font-size: 0.8rem;
+            font-size: clamp(0.75rem, 1.8vw, 0.8rem);
             text-align: right;
         }
 
-        /* Responsive */
+        /* Mobile-specific styles */
         @media (max-width: 768px) {
-            .main-title {
-                font-size: 2rem;
+            body {
+                padding: 5px;
             }
             
             .app-container {
-                padding: 20px;
-                margin: 10px;
+                padding: 15px;
+                border-radius: 15px;
             }
             
             .nav-tabs {
-                flex-direction: column;
-                width: 100%;
+                padding: 4px;
+                gap: 2px;
             }
             
             .nav-tab {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .participants-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .participant-card {
+                padding: 14px;
+            }
+            
+            .participant-content {
+                gap: 10px;
+            }
+            
+            .participant-actions {
+                gap: 4px;
+            }
+            
+            .monthly-stats {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .monthly-stat-card {
+                padding: 20px;
+            }
+            
+            .progress-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .month-selector {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .month-selector select {
                 width: 100%;
-                text-align: center;
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 12px;
+            }
+            
+            .stat-card {
+                padding: 16px;
+            }
+            
+            .participant-card {
+                padding: 12px;
+            }
+            
+            .info-card {
+                padding: 12px;
+            }
+            
+            .monthly-stat-card {
+                padding: 16px;
+            }
+            
+            .progress-section {
+                padding: 16px;
+            }
+            
+            .progress-item {
+                padding: 12px;
             }
         }
 
         /* Icons */
         .icon {
-            width: 24px;
-            height: 24px;
             display: inline-block;
         }
+
+        /* Utility classes */
+        .text-center { text-align: center; }
+        .mb-sm { margin-bottom: 8px; }
+        .mb-md { margin-bottom: 16px; }
+        .mb-lg { margin-bottom: 24px; }
     </style>
 </head>
 <body>
@@ -485,6 +605,7 @@
                         padding: 5px 10px;
                         border-radius: 5px;
                         cursor: pointer;
+                        font-size: 0.8rem;
                     ">🔄 Test Connection</button>
                 </div>
             </div>
@@ -790,6 +911,18 @@
         let lastResetCheck = null;
         let midnightResetTimeout = null;
         let baseStartDate = new Date('2025-07-01'); // Tanggal mulai program
+        let isResetting = false; // Flag untuk mencegah multiple reset
+
+        // PERBAIKAN TIMEZONE: Gunakan timezone Indonesia (WIB)
+        function getIndonesianDate() {
+            const now = new Date();
+            const indonesianTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+            return indonesianTime;
+        }
+
+        function getIndonesianDateKey() {
+            return getIndonesianDate().toISOString().split('T')[0];
+        }
 
         // Wait for Firebase modules to load
         window.initAppAfterFirebase = function() {
@@ -911,6 +1044,12 @@
                 );
                 
                 const unsubscribeParticipants = window.firebaseModules.onSnapshot(participantsQuery, (snapshot) => {
+                    // PERBAIKAN: Hindari reset saat listener update
+                    if (isResetting) {
+                        console.log('🚫 Skipping Firebase listener update during reset');
+                        return;
+                    }
+
                     const firebaseParticipants = [];
                     snapshot.forEach((doc) => {
                         firebaseParticipants.push(doc.data());
@@ -1081,6 +1220,9 @@
 
         // Initialize app
         function initApp() {
+            // PERBAIKAN: Gunakan tanggal Indonesia
+            currentDate = getIndonesianDate();
+            
             initializeParticipants();
             updateCurrentDate();
             setupDailyReset();
@@ -1093,7 +1235,7 @@
             }
             
             console.log('✅ App initialized');
-            console.log(`📅 Current date: ${currentDate.toLocaleString('id-ID')}`);
+            console.log(`📅 Current date (WIB): ${currentDate.toLocaleString('id-ID')}`);
             console.log(`📋 Participants initialized: ${participants.length}`);
         }
 
@@ -1111,7 +1253,7 @@
                     name: participantName,
                     dailyProgress: {},
                     currentJuz: 1, // Set default dulu
-                    lastUpdated: currentDate.toISOString().split('T')[0]
+                    lastUpdated: getIndonesianDateKey()
                 };
             });
             
@@ -1125,13 +1267,18 @@
             });
         }
 
-        // PERBAIKAN: Fungsi untuk menghitung juz berdasarkan hari dari tanggal mulai
+        // PERBAIKAN: Sistem rotasi - peserta bergerak turun, juz tetap
         function calculateJuzForParticipant(participantId, currentDate) {
-            // Hitung hari sejak tanggal mulai program
-            const diffTime = currentDate - baseStartDate;
+            // Hitung hari sejak tanggal mulai program  
+            const indonesianCurrentDate = new Date(currentDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+            const indonesianStartDate = new Date(baseStartDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+            
+            const diffTime = indonesianCurrentDate - indonesianStartDate;
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             
-            // Formula rotasi: (participant_id - 1 + days_passed) % 30 + 1
+            // PERBAIKAN SISTEM ROTASI: Peserta bergerak turun
+            // Jika Syafiq (ID=1) hari ini juz 1, besok dia juz 2
+            // Formula: (participant_id - 1 + days_passed) % 30 + 1
             const juz = ((participantId - 1 + diffDays) % 30) + 1;
             
             console.log(`📖 Participant ${participantId}: Day ${diffDays} from start → Juz ${juz}`);
@@ -1157,56 +1304,65 @@
             document.getElementById('current-date').textContent = dateStr;
         }
 
-        // Setup daily reset
+        // PERBAIKAN: Setup daily reset dengan timezone Indonesia
         function setupDailyReset() {
-            lastResetCheck = getTodayKey();
+            lastResetCheck = getIndonesianDateKey();
             scheduleNextMidnightReset();
             
-            // Backup check every minute
+            // Backup check setiap 30 detik dengan timezone Indonesia
             setInterval(() => {
-                const now = new Date();
-                const today = now.toISOString().split('T')[0];
+                const today = getIndonesianDateKey();
                 
-                if (lastResetCheck && lastResetCheck !== today) {
+                if (lastResetCheck && lastResetCheck !== today && !isResetting) {
                     console.log('🔄 Date changed detected via backup check, performing reset');
                     performDailyReset();
                 }
                 
                 lastResetCheck = today;
-            }, 60000);
+            }, 30000); // Check setiap 30 detik
         }
 
+        // PERBAIKAN: Schedule reset dengan timezone Indonesia yang lebih akurat
         function scheduleNextMidnightReset() {
             if (midnightResetTimeout) {
                 clearTimeout(midnightResetTimeout);
             }
             
-            const now = new Date();
+            // Gunakan timezone Indonesia
+            const now = getIndonesianDate();
             const tomorrow = new Date(now);
             tomorrow.setDate(tomorrow.getDate() + 1);
             tomorrow.setHours(0, 0, 0, 0);
             
             const timeUntilMidnight = tomorrow.getTime() - now.getTime();
             
-            console.log(`⏰ Current time: ${now.toLocaleString('id-ID')}`);
-            console.log(`⏰ Next reset scheduled for: ${tomorrow.toLocaleString('id-ID')}`);
+            console.log(`⏰ Current time (WIB): ${now.toLocaleString('id-ID')}`);
+            console.log(`⏰ Next reset scheduled for (WIB): ${tomorrow.toLocaleString('id-ID')}`);
             console.log(`⏰ Time until reset: ${Math.round(timeUntilMidnight / 1000 / 60)} minutes`);
             
             midnightResetTimeout = setTimeout(() => {
-                console.log('🌙 MIDNIGHT RESET TRIGGERED at exactly 00:00');
+                console.log('🌙 MIDNIGHT RESET TRIGGERED at exactly 00:00 WIB');
                 performDailyReset();
                 scheduleNextMidnightReset();
             }, timeUntilMidnight);
         }
 
         function performDailyReset() {
+            if (isResetting) {
+                console.log('⚠️ Reset already in progress, skipping');
+                return;
+            }
+            
+            isResetting = true;
             console.log('🔄 Performing daily reset...');
-            const now = new Date();
-            console.log(`🕐 Reset performed at: ${now.toLocaleString('id-ID')}`);
+            
+            // PERBAIKAN: Gunakan tanggal Indonesia
+            const now = getIndonesianDate();
+            console.log(`🕐 Reset performed at (WIB): ${now.toLocaleString('id-ID')}`);
             
             // Update current date
             currentDate = now;
-            lastResetCheck = getTodayKey();
+            lastResetCheck = getIndonesianDateKey();
             
             // PERBAIKAN: Update juz rotation untuk hari baru
             updateAllParticipantsJuz();
@@ -1224,18 +1380,23 @@
             saveToLocalStorage();
             
             updateFirebaseStatus('connected', 
-                `🌅 Reset berhasil pukul ${now.toLocaleTimeString('id-ID')} | Project: ibkangaji`);
+                `🌅 Reset berhasil pukul ${now.toLocaleTimeString('id-ID')} WIB | Project: ibkangaji`);
             
             console.log('✅ Daily reset completed successfully');
+            
+            // Reset flag setelah 5 detik
+            setTimeout(() => {
+                isResetting = false;
+            }, 5000);
         }
 
         function getTodayKey() {
-            return new Date().toISOString().split('T')[0];
+            return getIndonesianDateKey();
         }
 
         // Toggle participant check
         function toggleParticipantCheck(participantId) {
-            const today = currentDate.toISOString().split('T')[0];
+            const today = getIndonesianDateKey();
             const participant = participants.find(p => p.id === participantId);
             
             if (participant) {
@@ -1258,7 +1419,7 @@
 
         // PERBAIKAN: Render daily tab dengan nama dan juz yang benar
         function renderDailyTab() {
-            const today = currentDate.toISOString().split('T')[0];
+            const today = getIndonesianDateKey();
             
             // Pastikan ada 30 participants
             if (participants.length !== 30) {
@@ -1302,22 +1463,18 @@
                     <div class="participant-content">
                         <div class="participant-info">
                             <h3>${displayName}</h3>
-                            <p style="font-weight: 600; color: #FF7D29; margin-bottom: 8px;">
+                            <p style="font-weight: 600; color: #FF7D29; margin-bottom: 6px;">
                                 📖 Juz ${juzNumber} (Hal. ${juzDetail.pages})
                             </p>
-                            <div style="background: #F8F9FA; padding: 8px; border-radius: 6px; margin-bottom: 8px;">
-                                <p style="font-size: 0.85rem; color: #374151; font-weight: 500; margin-bottom: 4px;">
-                                    ${juzDetail.surah}
-                                </p>
-                                <p style="font-size: 0.8rem; color: #6B7280; font-style: italic;">
-                                    ${juzDetail.description}
-                                </p>
+                            <div class="juz-info">
+                                <p>${juzDetail.surah}</p>
+                                ${juzDetail.description ? `<p class="description">${juzDetail.description}</p>` : ''}
                             </div>
                             ${isCompleted ? '<small style="color: #10B981; font-weight: 600;">✅ Sudah Selesai</small>' : '<small style="color: #6B7280;">⏳ Belum selesai</small>'}
                         </div>
                         <div class="participant-actions">
-                            <span class="icon ${isCompleted ? 'icon-completed' : 'icon-pending'}" style="font-size: 28px;">📖</span>
-                            <span class="icon ${isCompleted ? 'icon-completed' : 'icon-pending'}" style="font-size: 32px;">✅</span>
+                            <span class="icon ${isCompleted ? 'icon-completed' : 'icon-pending'}">📖</span>
+                            <span class="icon ${isCompleted ? 'icon-completed' : 'icon-pending'}">✅</span>
                         </div>
                     </div>
                 `;
@@ -1360,7 +1517,7 @@
             }
             
             const months = getAvailableMonths();
-            const currentMonthKey = currentDate.toISOString().substring(0, 7);
+            const currentMonthKey = getIndonesianDateKey().substring(0, 7);
             
             const currentSelection = selector.value;
             
@@ -1395,7 +1552,7 @@
         function getAvailableMonths() {
             const months = [];
             const startDate = new Date('2025-06-01');
-            const currentMonth = new Date();
+            const currentMonth = getIndonesianDate();
             
             console.log(`📅 Generating months from ${startDate.toDateString()} to ${currentMonth.toDateString()}`);
             
@@ -1415,7 +1572,7 @@
 
         // Update monthly records
         function updateMonthlyRecords() {
-            const today = currentDate.toISOString().split('T')[0];
+            const today = getIndonesianDateKey();
             const monthKey = today.substring(0, 7);
             
             if (!monthlyRecords[monthKey]) {
@@ -1533,7 +1690,7 @@
             
             if (savedDate) {
                 const savedDateObj = new Date(savedDate);
-                const today = new Date();
+                const today = getIndonesianDate();
                 if (savedDateObj.toDateString() !== today.toDateString()) {
                     currentDate = today;
                     updateAllParticipantsJuz();
@@ -1563,22 +1720,22 @@
                 performDailyReset();
             },
             checkSchedule: () => {
-                const now = new Date();
+                const now = getIndonesianDate();
                 const tomorrow = new Date(now);
                 tomorrow.setDate(tomorrow.getDate() + 1);
                 tomorrow.setHours(0, 0, 0, 0);
                 const timeUntilMidnight = tomorrow.getTime() - now.getTime();
                 
-                console.log('📊 Reset Schedule Info:');
+                console.log('📊 Reset Schedule Info (WIB):');
                 console.log(`Current time: ${now.toLocaleString('id-ID')}`);
                 console.log(`Next reset: ${tomorrow.toLocaleString('id-ID')}`);
                 console.log(`Time until reset: ${Math.round(timeUntilMidnight / 1000 / 60)} minutes`);
                 console.log(`Last reset check: ${lastResetCheck}`);
-                console.log(`Current date key: ${getTodayKey()}`);
+                console.log(`Current date key: ${getIndonesianDateKey()}`);
             },
             forceNewDay: () => {
                 console.log('🧪 Force new day simulation');
-                const tomorrow = new Date();
+                const tomorrow = getIndonesianDate();
                 tomorrow.setDate(tomorrow.getDate() + 1);
                 currentDate = tomorrow;
                 performDailyReset();
@@ -1590,7 +1747,9 @@
                     console.log(`${p.name} (ID: ${p.id}): Current Juz ${p.currentJuz} | Expected: ${expectedJuz} | Match: ${p.currentJuz === expectedJuz ? '✅' : '❌'}`);
                 });
                 
-                const diffTime = currentDate - baseStartDate;
+                const indonesianCurrentDate = new Date(currentDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+                const indonesianStartDate = new Date(baseStartDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+                const diffTime = indonesianCurrentDate - indonesianStartDate;
                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 console.log(`📅 Days since start (${baseStartDate.toDateString()}): ${diffDays}`);
             },
@@ -1633,51 +1792,14 @@
                 
                 console.log('✅ Names fixed and saved to Firebase + localStorage');
             },
-            testFirebaseRules: async () => {
-                if (!isFirebaseConnected || !db) {
-                    console.log('❌ Firebase not connected');
-                    return;
-                }
-                
-                console.log('🧪 Testing Firebase Security Rules...');
-                
-                try {
-                    // Test read
-                    const testRead = await window.firebaseModules.getDocs(
-                        window.firebaseModules.collection(db, 'participants')
-                    );
-                    console.log('✅ Read test passed. Documents:', testRead.size);
-                    
-                    // Test write
-                    const testDoc = {
-                        id: 999,
-                        name: 'Test User',
-                        dailyProgress: {},
-                        currentJuz: 1,
-                        lastUpdated: new Date().toISOString().split('T')[0]
-                    };
-                    
-                    await window.firebaseModules.setDoc(
-                        window.firebaseModules.doc(db, 'participants', '999'),
-                        testDoc
-                    );
-                    console.log('✅ Write test passed');
-                    
-                    // Clean up test document
-                    await window.firebaseModules.deleteDoc(
-                        window.firebaseModules.doc(db, 'participants', '999')
-                    );
-                    console.log('✅ Delete test passed');
-                    
-                    console.log('🎉 All Firebase tests passed! Sync should work across devices.');
-                    
-                } catch (error) {
-                    console.error('❌ Firebase test failed:', error);
-                    console.log('💡 Solution: Update Firestore Security Rules to allow read/write');
-                    console.log('📝 Go to Firebase Console > Firestore > Rules');
-                    console.log('🔧 Set rules to: allow read, write: if true;');
-                }
-            },
+            testTimezone: () => {
+                const utc = new Date();
+                const wib = getIndonesianDate();
+                console.log('🌍 Timezone Test:');
+                console.log(`UTC: ${utc.toISOString()}`);
+                console.log(`WIB: ${wib.toLocaleString('id-ID')} (${wib.toISOString()})`);
+                console.log(`Date key WIB: ${getIndonesianDateKey()}`);
+            }
         };
 
         // Make debug functions available
@@ -1686,7 +1808,7 @@
         console.log('- debugFunctions.checkSchedule() - Check reset schedule');
         console.log('- debugFunctions.forceNewDay() - Simulate new day');
         console.log('- debugFunctions.checkJuzRotation() - Check juz assignments');
-        console.log('- debugFunctions.updateJuzNow() - Update juz immediately');
+        console.log('- debugFunctions.testTimezone() - Test timezone WIB');
     </script>
 </body>
 </html>
