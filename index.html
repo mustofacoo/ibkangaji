@@ -910,7 +910,13 @@
         let unsubscribeListeners = [];
         let lastResetCheck = null;
         let midnightResetTimeout = null;
-        let baseStartDate = new Date('2025-07-01'); // Tanggal mulai program
+        let baseStartDate = (() => {
+            const today = new Date();
+            // Set ke hari ini agar dimulai dari juz 1
+            const startDate = new Date(today.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+            startDate.setHours(0, 0, 0, 0);
+            return startDate;
+        })(); // Tanggal mulai program - RESET KE HARI INI
         let isResetting = false; // Flag untuk mencegah multiple reset
 
         // PERBAIKAN TIMEZONE: Gunakan timezone Indonesia (WIB)
@@ -1267,8 +1273,8 @@
             });
         }
 
-        // PERBAIKAN: Sistem rotasi - peserta bergerak turun, juz tetap
-        function calculateJuzForParticipant(participantId, currentDate) {
+        // PERBAIKAN: Sistem rotasi - juz tetap 1-30, peserta yang berputar
+        function getRotatedParticipantOrder(currentDate) {
             // Hitung hari sejak tanggal mulai program  
             const indonesianCurrentDate = new Date(currentDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
             const indonesianStartDate = new Date(baseStartDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
@@ -1276,21 +1282,29 @@
             const diffTime = indonesianCurrentDate - indonesianStartDate;
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             
-            // PERBAIKAN SISTEM ROTASI: Peserta bergerak turun
-            // Jika Syafiq (ID=1) hari ini juz 1, besok dia juz 2
-            // Formula: (participant_id - 1 + days_passed) % 30 + 1
-            const juz = ((participantId - 1 + diffDays) % 30) + 1;
+            // Buat urutan peserta yang berputar
+            // Hari 0: [Syafiq, Siti, Muhammad, ..., Umming] → Juz [1,2,3,...,30]
+            // Hari 1: [Umming, Syafiq, Siti, ..., Anas] → Juz [1,2,3,...,30]
+            // Yang kemarin juz 30 naik ke juz 1
             
-            console.log(`📖 Participant ${participantId}: Day ${diffDays} from start → Juz ${juz}`);
-            return juz;
+            const rotatedOrder = [];
+            for (let i = 0; i < 30; i++) {
+                // Rumus rotasi: mulai dari participant yang hari ini dapat juz 1
+                const participantIndex = (30 - diffDays + i) % 30;
+                rotatedOrder.push(participants[participantIndex]);
+            }
+            
+            console.log(`📖 Day ${diffDays}: Rotated order - Juz 1: ${rotatedOrder[0]?.name}, Juz 30: ${rotatedOrder[29]?.name}`);
+            return rotatedOrder;
         }
 
-        // PERBAIKAN: Update juz untuk semua participant
+        // Update juz assignments (juz tetap 1-30, peserta yang berputar)
         function updateAllParticipantsJuz() {
-            participants.forEach(participant => {
-                participant.currentJuz = calculateJuzForParticipant(participant.id, currentDate);
+            // Reset semua juz dulu
+            participants.forEach((participant, index) => {
+                participant.currentJuz = index + 1; // Default juz sesuai urutan
             });
-            console.log('🔄 Updated juz for all participants based on current date');
+            console.log('🔄 Updated juz assignments - using rotation display');
         }
 
         // Update current date display
@@ -1417,7 +1431,7 @@
             }
         }
 
-        // PERBAIKAN: Render daily tab dengan nama dan juz yang benar
+        // PERBAIKAN: Render daily tab dengan rotasi peserta
         function renderDailyTab() {
             const today = getIndonesianDateKey();
             
@@ -1434,22 +1448,25 @@
             document.getElementById('khatam-status').textContent = 
                 completedToday === 30 ? 'Khatam Hari Ini! 🎉' : `${30 - completedToday} Lagi untuk Khatam`;
             
+            // PERBAIKAN: Gunakan urutan peserta yang berputar
+            const rotatedParticipants = getRotatedParticipantOrder(currentDate);
+            
             // Render participants
             const grid = document.getElementById('participants-grid');
             grid.innerHTML = '';
             
-            participants.forEach((participant, index) => {
+            rotatedParticipants.forEach((participant, index) => {
                 const isCompleted = participant.dailyProgress && participant.dailyProgress[today];
-                const juzNumber = participant.currentJuz;
+                const juzNumber = index + 1; // Juz sesuai posisi (1-30 dari atas ke bawah)
                 const juzDetail = juzDetails[juzNumber] || { 
                     surah: "Detail tidak tersedia", 
                     pages: "?",
                     description: "Silakan cek Al-Qur'an"
                 };
                 
-                // Debug log untuk nama
+                // Debug log untuk rotasi
                 if (index < 5) { // Log first 5 for debugging
-                    console.log(`🔍 Rendering participant ${participant.id}: Name = "${participant.name}", Juz = ${juzNumber}`);
+                    console.log(`🔍 Position ${index + 1}: ${participant.name} → Juz ${juzNumber}`);
                 }
                 
                 const card = document.createElement('div');
@@ -1482,8 +1499,8 @@
                 grid.appendChild(card);
             });
             
-            console.log(`🎨 Rendered ${participants.length} participants`);
-            console.log('📋 First 3 participants:', participants.slice(0, 3).map(p => `${p.name} (ID: ${p.id})`));
+            console.log(`🎨 Rendered ${rotatedParticipants.length} participants with rotation`);
+            console.log(`📋 Today's assignment - Juz 1: ${rotatedParticipants[0]?.name}, Juz 30: ${rotatedParticipants[29]?.name}`);
         }
 
         // Switch tabs
@@ -1741,17 +1758,30 @@
                 performDailyReset();
             },
             checkJuzRotation: () => {
-                console.log('📖 Current Juz Assignments:');
-                participants.forEach(p => {
-                    const expectedJuz = calculateJuzForParticipant(p.id, currentDate);
-                    console.log(`${p.name} (ID: ${p.id}): Current Juz ${p.currentJuz} | Expected: ${expectedJuz} | Match: ${p.currentJuz === expectedJuz ? '✅' : '❌'}`);
+                console.log('📖 Current Rotation System:');
+                const rotatedOrder = getRotatedParticipantOrder(currentDate);
+                
+                console.log('📋 Today\'s assignments:');
+                rotatedOrder.forEach((participant, index) => {
+                    const juzNumber = index + 1;
+                    console.log(`Juz ${juzNumber}: ${participant.name} (ID: ${participant.id})`);
                 });
                 
                 const indonesianCurrentDate = new Date(currentDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
                 const indonesianStartDate = new Date(baseStartDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
                 const diffTime = indonesianCurrentDate - indonesianStartDate;
                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                console.log(`📅 Days since start (${baseStartDate.toDateString()}): ${diffDays}`);
+                
+                console.log(`📅 Days since start: ${diffDays}`);
+                console.log(`📖 Juz 1 (Top): ${rotatedOrder[0]?.name}`);
+                console.log(`📖 Juz 30 (Bottom): ${rotatedOrder[29]?.name}`);
+                
+                console.log('\n🔮 Tomorrow\'s preview:');
+                const tomorrow = new Date(currentDate);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const tomorrowOrder = getRotatedParticipantOrder(tomorrow);
+                console.log(`Juz 1 (Top): ${tomorrowOrder[0]?.name} (today's Juz 30)`);
+                console.log(`Juz 2: ${tomorrowOrder[1]?.name} (today's Juz 1)`);
             },
             checkNamesDebug: () => {
                 console.log('🔍 Debugging nama peserta:');
@@ -1799,6 +1829,80 @@
                 console.log(`UTC: ${utc.toISOString()}`);
                 console.log(`WIB: ${wib.toLocaleString('id-ID')} (${wib.toISOString()})`);
                 console.log(`Date key WIB: ${getIndonesianDateKey()}`);
+            },
+            resetToToday: () => {
+                console.log('🔄 RESET: Setting start date to today');
+                const today = getIndonesianDate();
+                baseStartDate = new Date(today);
+                baseStartDate.setHours(0, 0, 0, 0);
+                
+                console.log(`📅 New start date: ${baseStartDate.toLocaleDateString('id-ID')}`);
+                
+                // Clear all progress
+                participants.forEach(participant => {
+                    participant.dailyProgress = {};
+                });
+                
+                // Update system with new base date
+                updateAllParticipantsJuz();
+                
+                // Save to Firebase and localStorage
+                participants.forEach(participant => {
+                    saveParticipantToFirebase(participant);
+                });
+                saveToLocalStorage();
+                
+                // Re-render
+                renderDailyTab();
+                
+                console.log('✅ RESET COMPLETED - Program dimulai hari ini');
+                console.log('📖 Sistem rotasi: Juz 1-30 tetap urut, peserta yang berputar');
+                
+                // Show current assignment
+                const rotatedOrder = getRotatedParticipantOrder(currentDate);
+                console.log(`📋 Hari ini - Juz 1: ${rotatedOrder[0]?.name}, Juz 30: ${rotatedOrder[29]?.name}`);
+            },
+            clearAllProgress: () => {
+                if (confirm('⚠️ BAHAYA! Ini akan menghapus SEMUA progress bacaan!\n\nLanjutkan?')) {
+                    console.log('🗑️ Clearing all daily progress...');
+                    
+                    participants.forEach(participant => {
+                        participant.dailyProgress = {};
+                    });
+                    
+                    monthlyRecords = {};
+                    
+                    // Save to Firebase and localStorage
+                    participants.forEach(participant => {
+                        saveParticipantToFirebase(participant);
+                    });
+                    saveToLocalStorage();
+                    
+                    // Re-render
+                    renderDailyTab();
+                    
+                    console.log('✅ All progress cleared');
+                    alert('✅ Semua progress telah dihapus!');
+                }
+            },
+            previewTomorrow: () => {
+                console.log('🔮 PREVIEW BESOK:');
+                const tomorrow = new Date(currentDate);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                
+                const tomorrowOrder = getRotatedParticipantOrder(tomorrow);
+                
+                console.log('📋 Urutan besok:');
+                console.log(`Juz 1 (Paling Atas): ${tomorrowOrder[0]?.name} ← Hari ini Juz 30`);
+                console.log(`Juz 2: ${tomorrowOrder[1]?.name} ← Hari ini Juz 1`);
+                console.log(`Juz 3: ${tomorrowOrder[2]?.name} ← Hari ini Juz 2`);
+                console.log('...');
+                console.log(`Juz 30 (Paling Bawah): ${tomorrowOrder[29]?.name} ← Hari ini Juz 29`);
+                
+                console.log('\n✅ Konfirmasi sistem rotasi benar:');
+                console.log('- Juz 1-30 tetap urut dari atas ke bawah');
+                console.log('- Yang kemarin Juz 30 naik ke Juz 1 (paling atas)');
+                console.log('- Yang lain turun satu posisi');
             }
         };
 
@@ -1807,8 +1911,15 @@
         console.log('- debugFunctions.testReset() - Test reset manually');
         console.log('- debugFunctions.checkSchedule() - Check reset schedule');
         console.log('- debugFunctions.forceNewDay() - Simulate new day');
-        console.log('- debugFunctions.checkJuzRotation() - Check juz assignments');
+        console.log('- debugFunctions.checkJuzRotation() - Check rotation system');
+        console.log('- debugFunctions.previewTomorrow() - 🔮 Preview tomorrow rotation');
         console.log('- debugFunctions.testTimezone() - Test timezone WIB');
+        console.log('- debugFunctions.resetToToday() - 🔥 RESET: Start program from today');
+        console.log('- debugFunctions.clearAllProgress() - 🗑️ Clear all reading progress');
+        console.log('');
+        console.log('🔄 NEW ROTATION SYSTEM:');
+        console.log('📖 Juz 1-30 tetap urut dari atas ke bawah');
+        console.log('👥 Peserta yang berputar - yang kemarin juz 30 naik ke juz 1');
     </script>
 </body>
 </html>
