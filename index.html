@@ -465,6 +465,18 @@
             text-align: right;
         }
 
+        /* Timezone Display */
+        .timezone-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #93C5FD;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 15px;
+            font-size: clamp(0.75rem, 2vw, 0.85rem);
+            color: #1E40AF;
+            text-align: center;
+        }
+
         /* Mobile-specific styles */
         @media (max-width: 768px) {
             body {
@@ -594,6 +606,11 @@
 
         <!-- Daily Tab -->
         <div id="daily-tab" class="tab-content active">
+            <!-- Timezone Info -->
+            <div class="timezone-info" id="timezone-info">
+                <span id="timezone-text">🕐 Waktu: Loading... (WIB)</span>
+            </div>
+
             <!-- Firebase Status -->
             <div class="firebase-status" id="firebase-status">
                 <span id="firebase-status-text">Status: 🟡 Checking Firebase...</span>
@@ -910,6 +927,7 @@
         let unsubscribeListeners = [];
         let lastResetCheck = null;
         let midnightResetTimeout = null;
+        let clockUpdateInterval = null;
         let baseStartDate = (() => {
             const today = new Date();
             // Set ke hari ini agar dimulai dari juz 1
@@ -919,15 +937,53 @@
         })(); // Tanggal mulai program - RESET KE HARI INI
         let isResetting = false; // Flag untuk mencegah multiple reset
 
-        // PERBAIKAN TIMEZONE: Gunakan timezone Indonesia (WIB)
-        function getIndonesianDate() {
-            const now = new Date();
-            const indonesianTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
-            return indonesianTime;
+        // PERBAIKAN TIMEZONE: Fungsi yang lebih akurat untuk timezone Jakarta
+        function getJakartaTime() {
+            // Menggunakan Intl.DateTimeFormat untuk timezone Jakarta yang lebih akurat
+            const jakartaFormatter = new Intl.DateTimeFormat('sv-SE', {
+                timeZone: 'Asia/Jakarta',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            
+            const jakartaString = jakartaFormatter.format(new Date());
+            return new Date(jakartaString);
         }
 
-        function getIndonesianDateKey() {
-            return getIndonesianDate().toISOString().split('T')[0];
+        function getJakartaDate() {
+            return getJakartaTime();
+        }
+
+        function getJakartaDateKey() {
+            const jakartaTime = getJakartaTime();
+            return jakartaTime.toISOString().split('T')[0];
+        }
+
+        function getJakartaTimeString() {
+            const jakartaTime = getJakartaTime();
+            return jakartaTime.toLocaleString('id-ID', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+        }
+
+        // Update timezone display
+        function updateTimezoneDisplay() {
+            const timezoneElement = document.getElementById('timezone-text');
+            if (timezoneElement) {
+                const jakartaTimeStr = getJakartaTimeString();
+                timezoneElement.textContent = `🕐 Waktu: ${jakartaTimeStr} WIB`;
+            }
         }
 
         // Wait for Firebase modules to load
@@ -1226,12 +1282,14 @@
 
         // Initialize app
         function initApp() {
-            // PERBAIKAN: Gunakan tanggal Indonesia
-            currentDate = getIndonesianDate();
+            // PERBAIKAN: Gunakan tanggal Jakarta
+            currentDate = getJakartaDate();
             
             initializeParticipants();
             updateCurrentDate();
+            updateTimezoneDisplay();
             setupDailyReset();
+            setupClockUpdate();
             populateMonthSelector();
             renderDailyTab();
             
@@ -1241,8 +1299,16 @@
             }
             
             console.log('✅ App initialized');
-            console.log(`📅 Current date (WIB): ${currentDate.toLocaleString('id-ID')}`);
+            console.log(`📅 Current date (WIB): ${getJakartaTimeString()}`);
             console.log(`📋 Participants initialized: ${participants.length}`);
+        }
+
+        // Setup clock update
+        function setupClockUpdate() {
+            // Update clock every second
+            clockUpdateInterval = setInterval(() => {
+                updateTimezoneDisplay();
+            }, 1000);
         }
 
         // PERBAIKAN: Initialize participants dengan nama yang benar
@@ -1259,7 +1325,7 @@
                     name: participantName,
                     dailyProgress: {},
                     currentJuz: 1, // Set default dulu
-                    lastUpdated: getIndonesianDateKey()
+                    lastUpdated: getJakartaDateKey()
                 };
             });
             
@@ -1275,11 +1341,11 @@
 
         // PERBAIKAN: Sistem rotasi - juz tetap 1-30, peserta yang berputar
         function getRotatedParticipantOrder(currentDate) {
-            // Hitung hari sejak tanggal mulai program  
-            const indonesianCurrentDate = new Date(currentDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
-            const indonesianStartDate = new Date(baseStartDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+            // Hitung hari sejak tanggal mulai program menggunakan Jakarta time
+            const jakartaCurrentDate = new Date(currentDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+            const jakartaStartDate = new Date(baseStartDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
             
-            const diffTime = indonesianCurrentDate - indonesianStartDate;
+            const diffTime = jakartaCurrentDate - jakartaStartDate;
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             
             // Buat urutan peserta yang berputar
@@ -1318,14 +1384,14 @@
             document.getElementById('current-date').textContent = dateStr;
         }
 
-        // PERBAIKAN: Setup daily reset dengan timezone Indonesia
+        // PERBAIKAN: Setup daily reset dengan timezone Jakarta yang lebih presisi
         function setupDailyReset() {
-            lastResetCheck = getIndonesianDateKey();
+            lastResetCheck = getJakartaDateKey();
             scheduleNextMidnightReset();
             
-            // Backup check setiap 30 detik dengan timezone Indonesia
+            // Backup check setiap 30 detik dengan timezone Jakarta
             setInterval(() => {
-                const today = getIndonesianDateKey();
+                const today = getJakartaDateKey();
                 
                 if (lastResetCheck && lastResetCheck !== today && !isResetting) {
                     console.log('🔄 Date changed detected via backup check, performing reset');
@@ -1336,21 +1402,21 @@
             }, 30000); // Check setiap 30 detik
         }
 
-        // PERBAIKAN: Schedule reset dengan timezone Indonesia yang lebih akurat
+        // PERBAIKAN: Schedule reset dengan timezone Jakarta yang lebih akurat
         function scheduleNextMidnightReset() {
             if (midnightResetTimeout) {
                 clearTimeout(midnightResetTimeout);
             }
             
-            // Gunakan timezone Indonesia
-            const now = getIndonesianDate();
+            // Gunakan timezone Jakarta dengan perhitungan yang lebih presisi
+            const now = getJakartaTime();
             const tomorrow = new Date(now);
             tomorrow.setDate(tomorrow.getDate() + 1);
             tomorrow.setHours(0, 0, 0, 0);
             
             const timeUntilMidnight = tomorrow.getTime() - now.getTime();
             
-            console.log(`⏰ Current time (WIB): ${now.toLocaleString('id-ID')}`);
+            console.log(`⏰ Current time (WIB): ${getJakartaTimeString()}`);
             console.log(`⏰ Next reset scheduled for (WIB): ${tomorrow.toLocaleString('id-ID')}`);
             console.log(`⏰ Time until reset: ${Math.round(timeUntilMidnight / 1000 / 60)} minutes`);
             
@@ -1370,19 +1436,20 @@
             isResetting = true;
             console.log('🔄 Performing daily reset...');
             
-            // PERBAIKAN: Gunakan tanggal Indonesia
-            const now = getIndonesianDate();
-            console.log(`🕐 Reset performed at (WIB): ${now.toLocaleString('id-ID')}`);
+            // PERBAIKAN: Gunakan tanggal Jakarta
+            const now = getJakartaDate();
+            console.log(`🕐 Reset performed at (WIB): ${getJakartaTimeString()}`);
             
             // Update current date
             currentDate = now;
-            lastResetCheck = getIndonesianDateKey();
+            lastResetCheck = getJakartaDateKey();
             
             // PERBAIKAN: Update juz rotation untuk hari baru
             updateAllParticipantsJuz();
             
             // Update date display
             updateCurrentDate();
+            updateTimezoneDisplay();
             
             // Re-render participants dengan juz assignments baru
             renderDailyTab();
@@ -1405,12 +1472,12 @@
         }
 
         function getTodayKey() {
-            return getIndonesianDateKey();
+            return getJakartaDateKey();
         }
 
         // Toggle participant check
         function toggleParticipantCheck(participantId) {
-            const today = getIndonesianDateKey();
+            const today = getJakartaDateKey();
             const participant = participants.find(p => p.id === participantId);
             
             if (participant) {
@@ -1433,7 +1500,7 @@
 
         // PERBAIKAN: Render daily tab dengan rotasi peserta
         function renderDailyTab() {
-            const today = getIndonesianDateKey();
+            const today = getJakartaDateKey();
             
             // Pastikan ada 30 participants
             if (participants.length !== 30) {
@@ -1534,7 +1601,7 @@
             }
             
             const months = getAvailableMonths();
-            const currentMonthKey = getIndonesianDateKey().substring(0, 7);
+            const currentMonthKey = getJakartaDateKey().substring(0, 7);
             
             const currentSelection = selector.value;
             
@@ -1569,7 +1636,7 @@
         function getAvailableMonths() {
             const months = [];
             const startDate = new Date('2025-06-01');
-            const currentMonth = getIndonesianDate();
+            const currentMonth = getJakartaDate();
             
             console.log(`📅 Generating months from ${startDate.toDateString()} to ${currentMonth.toDateString()}`);
             
@@ -1589,7 +1656,7 @@
 
         // Update monthly records
         function updateMonthlyRecords() {
-            const today = getIndonesianDateKey();
+            const today = getJakartaDateKey();
             const monthKey = today.substring(0, 7);
             
             if (!monthlyRecords[monthKey]) {
@@ -1707,7 +1774,7 @@
             
             if (savedDate) {
                 const savedDateObj = new Date(savedDate);
-                const today = getIndonesianDate();
+                const today = getJakartaDate();
                 if (savedDateObj.toDateString() !== today.toDateString()) {
                     currentDate = today;
                     updateAllParticipantsJuz();
@@ -1721,6 +1788,10 @@
         window.addEventListener('beforeunload', () => {
             if (midnightResetTimeout) {
                 clearTimeout(midnightResetTimeout);
+            }
+            
+            if (clockUpdateInterval) {
+                clearInterval(clockUpdateInterval);
             }
             
             unsubscribeListeners.forEach(unsubscribe => {
@@ -1737,22 +1808,22 @@
                 performDailyReset();
             },
             checkSchedule: () => {
-                const now = getIndonesianDate();
+                const now = getJakartaTime();
                 const tomorrow = new Date(now);
                 tomorrow.setDate(tomorrow.getDate() + 1);
                 tomorrow.setHours(0, 0, 0, 0);
                 const timeUntilMidnight = tomorrow.getTime() - now.getTime();
                 
                 console.log('📊 Reset Schedule Info (WIB):');
-                console.log(`Current time: ${now.toLocaleString('id-ID')}`);
+                console.log(`Current time: ${getJakartaTimeString()}`);
                 console.log(`Next reset: ${tomorrow.toLocaleString('id-ID')}`);
                 console.log(`Time until reset: ${Math.round(timeUntilMidnight / 1000 / 60)} minutes`);
                 console.log(`Last reset check: ${lastResetCheck}`);
-                console.log(`Current date key: ${getIndonesianDateKey()}`);
+                console.log(`Current date key: ${getJakartaDateKey()}`);
             },
             forceNewDay: () => {
                 console.log('🧪 Force new day simulation');
-                const tomorrow = getIndonesianDate();
+                const tomorrow = getJakartaDate();
                 tomorrow.setDate(tomorrow.getDate() + 1);
                 currentDate = tomorrow;
                 performDailyReset();
@@ -1767,9 +1838,9 @@
                     console.log(`Juz ${juzNumber}: ${participant.name} (ID: ${participant.id})`);
                 });
                 
-                const indonesianCurrentDate = new Date(currentDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
-                const indonesianStartDate = new Date(baseStartDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
-                const diffTime = indonesianCurrentDate - indonesianStartDate;
+                const jakartaCurrentDate = new Date(currentDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+                const jakartaStartDate = new Date(baseStartDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+                const diffTime = jakartaCurrentDate - jakartaStartDate;
                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 
                 console.log(`📅 Days since start: ${diffDays}`);
@@ -1824,15 +1895,24 @@
             },
             testTimezone: () => {
                 const utc = new Date();
-                const wib = getIndonesianDate();
+                const jakarta = getJakartaTime();
                 console.log('🌍 Timezone Test:');
                 console.log(`UTC: ${utc.toISOString()}`);
-                console.log(`WIB: ${wib.toLocaleString('id-ID')} (${wib.toISOString()})`);
-                console.log(`Date key WIB: ${getIndonesianDateKey()}`);
+                console.log(`Jakarta: ${getJakartaTimeString()} (${jakarta.toISOString()})`);
+                console.log(`Date key Jakarta: ${getJakartaDateKey()}`);
+                
+                // Test midnight calculation
+                const tomorrow = new Date(jakarta);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+                const timeUntilMidnight = tomorrow.getTime() - jakarta.getTime();
+                
+                console.log(`⏰ Time until next midnight (Jakarta): ${Math.round(timeUntilMidnight / 1000 / 60)} minutes`);
+                console.log(`⏰ Next midnight will be: ${tomorrow.toLocaleString('id-ID')}`);
             },
             resetToToday: () => {
                 console.log('🔄 RESET: Setting start date to today');
-                const today = getIndonesianDate();
+                const today = getJakartaDate();
                 baseStartDate = new Date(today);
                 baseStartDate.setHours(0, 0, 0, 0);
                 
@@ -1913,11 +1993,12 @@
         console.log('- debugFunctions.forceNewDay() - Simulate new day');
         console.log('- debugFunctions.checkJuzRotation() - Check rotation system');
         console.log('- debugFunctions.previewTomorrow() - 🔮 Preview tomorrow rotation');
-        console.log('- debugFunctions.testTimezone() - Test timezone WIB');
+        console.log('- debugFunctions.testTimezone() - Test timezone Jakarta');
         console.log('- debugFunctions.resetToToday() - 🔥 RESET: Start program from today');
         console.log('- debugFunctions.clearAllProgress() - 🗑️ Clear all reading progress');
         console.log('');
-        console.log('🔄 NEW ROTATION SYSTEM:');
+        console.log('🔄 FIXED TIMEZONE SYSTEM:');
+        console.log('🕐 Reset sekarang akan tepat pada pukul 00:00 WIB');
         console.log('📖 Juz 1-30 tetap urut dari atas ke bawah');
         console.log('👥 Peserta yang berputar - yang kemarin juz 30 naik ke juz 1');
     </script>
