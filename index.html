@@ -1801,11 +1801,185 @@
             });
         });
 
+        // Simulation variables
+        let simulatedTime = null;
+        let isSimulating = false;
+
+        // Override time functions for simulation
+        function getSimulatedJakartaTime() {
+            if (isSimulating && simulatedTime) {
+                return new Date(simulatedTime);
+            }
+            return getJakartaTime();
+        }
+
         // Debug functions (available in console)
         window.debugFunctions = {
             testReset: () => {
                 console.log('🧪 Manual reset test triggered');
                 performDailyReset();
+            },
+            
+            // 🚀 SIMULASI WAKTU 23:59
+            simulate2359: () => {
+                console.log('🕚 SIMULASI: Setting waktu ke 23:59:00 WIB');
+                
+                // Set simulasi ke 23:59:00 hari ini
+                const jakartaTime = getJakartaTime();
+                simulatedTime = new Date(jakartaTime);
+                simulatedTime.setHours(23, 59, 0, 0);
+                isSimulating = true;
+                
+                console.log(`⏰ Waktu disimulasikan: ${simulatedTime.toLocaleString('id-ID')} WIB`);
+                
+                // Override fungsi-fungsi waktu untuk simulasi
+                window.originalGetJakartaTime = getJakartaTime;
+                window.getJakartaTime = getSimulatedJakartaTime;
+                window.getJakartaDate = getSimulatedJakartaTime;
+                window.getJakartaDateKey = () => {
+                    const simTime = getSimulatedJakartaTime();
+                    return simTime.toISOString().split('T')[0];
+                };
+                window.getJakartaTimeString = () => {
+                    const simTime = getSimulatedJakartaTime();
+                    return simTime.toLocaleString('id-ID', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false
+                    });
+                };
+                
+                // Update current date untuk simulasi
+                currentDate = simulatedTime;
+                
+                // Update tampilan
+                updateTimezoneDisplay();
+                updateCurrentDate();
+                
+                // Hitung waktu hingga tengah malam (1 menit lagi)
+                const midnight = new Date(simulatedTime);
+                midnight.setDate(midnight.getDate() + 1);
+                midnight.setHours(0, 0, 0, 0);
+                const timeUntilMidnight = midnight.getTime() - simulatedTime.getTime();
+                
+                console.log(`⏰ Waktu hingga tengah malam: ${Math.round(timeUntilMidnight / 1000)} detik`);
+                console.log('⚠️ GUNAKAN debugFunctions.jumpToMidnight() untuk melompat ke 00:00');
+                console.log('⚠️ GUNAKAN debugFunctions.stopSimulation() untuk menghentikan simulasi');
+                
+                // Setup countdown untuk midnight
+                let countdown = 60; // 60 detik dari 23:59:00 ke 00:00:00
+                const countdownInterval = setInterval(() => {
+                    countdown--;
+                    simulatedTime.setSeconds(simulatedTime.getSeconds() + 1);
+                    
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                        console.log('🌙 MIDNIGHT REACHED! Triggering reset...');
+                        debugFunctions.jumpToMidnight();
+                    } else {
+                        updateTimezoneDisplay();
+                        if (countdown <= 10) {
+                            console.log(`⏰ Countdown: ${countdown} detik ke tengah malam...`);
+                        }
+                    }
+                }, 1000);
+                
+                // Store interval untuk cleanup
+                window.simulationCountdown = countdownInterval;
+                
+                alert('🕚 SIMULASI AKTIF!\n\nWaktu diset ke 23:59:00 WIB\nCountdown 60 detik ke tengah malam akan dimulai\n\nLihat console untuk detail!');
+            },
+            
+            // 🌙 SIMULASI TEPAT TENGAH MALAM
+            jumpToMidnight: () => {
+                if (!isSimulating) {
+                    console.log('⚠️ Simulasi belum aktif. Gunakan simulate2359() dulu');
+                    return;
+                }
+                
+                console.log('🌙 JUMPING TO MIDNIGHT: 00:00:00 WIB');
+                
+                // Set ke tengah malam
+                simulatedTime.setDate(simulatedTime.getDate() + 1);
+                simulatedTime.setHours(0, 0, 0, 0);
+                currentDate = new Date(simulatedTime);
+                
+                console.log(`⏰ Waktu sekarang: ${simulatedTime.toLocaleString('id-ID')} WIB`);
+                
+                // Clear countdown jika ada
+                if (window.simulationCountdown) {
+                    clearInterval(window.simulationCountdown);
+                }
+                
+                // Trigger reset
+                console.log('🔄 TRIGGERING DAILY RESET...');
+                performDailyReset();
+                
+                alert('🌙 TENGAH MALAM!\n\nReset harian telah dijalankan!\nCek perubahan rotasi juz di aplikasi.');
+            },
+            
+            // 🛑 HENTIKAN SIMULASI
+            stopSimulation: () => {
+                console.log('🛑 STOPPING SIMULATION');
+                
+                isSimulating = false;
+                simulatedTime = null;
+                
+                // Restore original functions
+                if (window.originalGetJakartaTime) {
+                    window.getJakartaTime = window.originalGetJakartaTime;
+                    window.getJakartaDate = window.originalGetJakartaTime;
+                    window.getJakartaDateKey = () => {
+                        return getJakartaTime().toISOString().split('T')[0];
+                    };
+                    window.getJakartaTimeString = () => {
+                        const jakartaTime = getJakartaTime();
+                        return jakartaTime.toLocaleString('id-ID', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: false
+                        });
+                    };
+                }
+                
+                // Clear countdown
+                if (window.simulationCountdown) {
+                    clearInterval(window.simulationCountdown);
+                }
+                
+                // Reset ke waktu real
+                currentDate = getJakartaTime();
+                
+                // Update tampilan
+                updateTimezoneDisplay();
+                updateCurrentDate();
+                renderDailyTab();
+                
+                // Re-setup real reset schedule
+                setupDailyReset();
+                
+                console.log('✅ Simulasi dihentikan, kembali ke waktu real');
+                alert('✅ Simulasi dihentikan!\n\nAplikasi kembali menggunakan waktu real.');
+            },
+            
+            // 🕐 CEK STATUS SIMULASI
+            checkSimulation: () => {
+                if (isSimulating) {
+                    console.log('🕚 SIMULASI AKTIF:');
+                    console.log(`⏰ Waktu simulasi: ${simulatedTime.toLocaleString('id-ID')} WIB`);
+                    console.log(`⏰ Waktu real: ${window.originalGetJakartaTime().toLocaleString('id-ID')} WIB`);
+                } else {
+                    console.log('🕐 Tidak ada simulasi aktif');
+                    console.log(`⏰ Waktu real: ${getJakartaTime().toLocaleString('id-ID')} WIB`);
+                }
             },
             checkSchedule: () => {
                 const now = getJakartaTime();
@@ -1988,6 +2162,14 @@
 
         // Make debug functions available
         console.log('🔧 Debug functions available:');
+        console.log('');
+        console.log('🕚 SIMULASI WAKTU:');
+        console.log('- debugFunctions.simulate2359() - 🚀 SIMULASI JAM 23:59 WIB');
+        console.log('- debugFunctions.jumpToMidnight() - 🌙 LOMPAT KE TENGAH MALAM');
+        console.log('- debugFunctions.stopSimulation() - 🛑 HENTIKAN SIMULASI');
+        console.log('- debugFunctions.checkSimulation() - 🕐 CEK STATUS SIMULASI');
+        console.log('');
+        console.log('🔧 FUNGSI LAINNYA:');
         console.log('- debugFunctions.testReset() - Test reset manually');
         console.log('- debugFunctions.checkSchedule() - Check reset schedule');
         console.log('- debugFunctions.forceNewDay() - Simulate new day');
@@ -2001,6 +2183,12 @@
         console.log('🕐 Reset sekarang akan tepat pada pukul 00:00 WIB');
         console.log('📖 Juz 1-30 tetap urut dari atas ke bawah');
         console.log('👥 Peserta yang berputar - yang kemarin juz 30 naik ke juz 1');
+        console.log('');
+        console.log('🚀 CARA SIMULASI:');
+        console.log('1. debugFunctions.simulate2359() - Set waktu ke 23:59');
+        console.log('2. Tunggu countdown 60 detik atau gunakan jumpToMidnight()');
+        console.log('3. Lihat perubahan rotasi juz');
+        console.log('4. debugFunctions.stopSimulation() - Kembali ke waktu real');
     </script>
 </body>
 </html>
