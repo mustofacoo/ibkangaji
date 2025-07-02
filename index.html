@@ -967,7 +967,7 @@
                 db = window.firebaseModules.getFirestore(firebaseApp);
                 isFirebaseConnected = true;
                 
-                updateFirebaseStatus('connected', '🟢 CENTANG SESUAI NAMA | Project: ibkangaji');
+                updateFirebaseStatus('connected', '🟢 CENTANG SESUAI NAMA | yuk ngaji!');
                 
                 // Test connection dengan mencoba baca data
                 testFirebaseConnection();
@@ -1021,7 +1021,9 @@
                     window.firebaseModules.collection(db, 'participants')
                 ).then((snapshot) => {
                     console.log('🔍 Test read successful. Documents found:', snapshot.size);
-                    alert(`✅ Firebase terhubung dengan baik!\n\nProject: ibkangaji\nStatus: Real-time sync aktif\nDocuments: ${snapshot.size}`);
+                   // alert(`✅ Firebase terhubung dengan baik!\n\nProject: ibkangaji\nStatus: Real-time sync aktif\nDocuments: ${snapshot.size}`);
+                  alert(`✅ LIHAT DULU RENTANG AYAT YANG AKAN DIBACA\n\nuntuk menyesuaikan tema ayat\nSemoga mendapatkan rahmat ^^\nDocuments: ${snapshot.size}`);
+              
                 }).catch((error) => {
                     console.error('❌ Test read failed:', error);
                     alert(`❌ Firebase connection issue:\n\n${error.message}\n\nCek security rules di Firebase Console!`);
