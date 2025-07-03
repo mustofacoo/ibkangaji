@@ -33,6 +33,7 @@
         .header {
             text-align: center;
             margin-bottom: 30px;
+            position: relative;
         }
 
         .main-title {
@@ -51,6 +52,30 @@
             font-size: clamp(0.9rem, 3vw, 1.1rem);
         }
 
+        /* Admin Button */
+        .admin-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .admin-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
         /* Navigation Tabs */
         .nav-container {
             display: flex;
@@ -66,7 +91,7 @@
             display: flex;
             gap: 3px;
             width: 100%;
-            max-width: 400px;
+            max-width: 600px;
         }
 
         .nav-tab {
@@ -74,7 +99,7 @@
             border: none;
             border-radius: 10px;
             font-weight: 600;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
             cursor: pointer;
             transition: all 0.3s ease;
             background: transparent;
@@ -95,6 +120,15 @@
             background: rgba(255, 125, 41, 0.1);
         }
 
+        .nav-tab.admin-tab {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            color: white;
+        }
+
+        .nav-tab.admin-tab.active {
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+        }
+
         /* Tab Content */
         .tab-content {
             display: none;
@@ -102,6 +136,305 @@
 
         .tab-content.active {
             display: block;
+        }
+
+        /* Admin Login Modal */
+        .admin-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .admin-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .admin-modal h3 {
+            color: #1F2937;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .admin-form-group {
+            margin-bottom: 20px;
+        }
+
+        .admin-form-group label {
+            display: block;
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .admin-form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .admin-form-group input:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .admin-modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .admin-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .admin-btn-primary {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            color: white;
+        }
+
+        .admin-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .admin-btn-secondary {
+            background: #F3F4F6;
+            color: #374151;
+        }
+
+        .admin-btn-secondary:hover {
+            background: #E5E7EB;
+        }
+
+        /* Admin Panel Styles */
+        .admin-panel {
+            background: linear-gradient(135deg, #F8FAFC, #F1F5F9);
+            border: 2px solid #6366F1;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .admin-panel h3 {
+            color: #6366F1;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .admin-action-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .admin-action-card:hover {
+            border-color: #6366F1;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.1);
+        }
+
+        .admin-action-card h4 {
+            color: #1F2937;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-action-card p {
+            color: #6B7280;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Edit Modal */
+        .edit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        .edit-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .edit-modal h3 {
+            color: #1F2937;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .edit-form-group {
+            margin-bottom: 20px;
+        }
+
+        .edit-form-group label {
+            display: block;
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .edit-form-group input, .edit-form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .edit-form-group input:focus, .edit-form-group select:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .progress-editor {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .progress-editor h5 {
+            color: #374151;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .date-progress-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .date-progress-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .date-progress-item span {
+            font-size: 0.9rem;
+            color: #374151;
+        }
+
+        .progress-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .add-date-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .add-date-form {
+            display: flex;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .add-date-form input {
+            flex: 1;
+        }
+
+        .add-date-btn {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #10B981, #34D399);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .add-date-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .remove-date-btn {
+            background: #EF4444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .remove-date-btn:hover {
+            background: #DC2626;
         }
 
         /* Firebase Status */
@@ -290,6 +623,24 @@
             align-items: center;
             gap: 6px;
             flex-shrink: 0;
+        }
+
+        .admin-edit-btn {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-edit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
 
         .icon {
@@ -494,8 +845,8 @@
             }
             
             .nav-tab {
-                padding: 10px 12px;
-                font-size: 0.9rem;
+                padding: 10px 8px;
+                font-size: 0.8rem;
             }
             
             .stats-grid {
@@ -544,6 +895,29 @@
                 width: 100%;
                 max-width: none;
             }
+
+            .admin-toggle {
+                position: static;
+                margin: 10px auto;
+                display: block;
+                width: fit-content;
+            }
+
+            .header {
+                text-align: center;
+            }
+
+            .admin-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .edit-modal-content {
+                padding: 20px;
+            }
+
+            .admin-modal-content {
+                padding: 20px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -586,14 +960,34 @@
         .mb-sm { margin-bottom: 8px; }
         .mb-md { margin-bottom: 16px; }
         .mb-lg { margin-bottom: 24px; }
+
+        /* Admin Status Indicator */
+        .admin-status {
+            background: linear-gradient(135deg, #10B981, #34D399);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
         <!-- Header -->
         <div class="header">
+            <button class="admin-toggle" onclick="showAdminLogin()">
+                🔧 Admin
+            </button>
             <h1 class="main-title">One Day One Juz Ibnu Katsir</h1>
             <p class="subtitle">Memantau progress membaca Al-Qur'an bersama</p>
+        </div>
+
+        <!-- Admin Status (when logged in) -->
+        <div id="admin-status" class="admin-status" style="display: none;">
+            👑 Mode Admin Aktif | <button onclick="logoutAdmin()" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Logout</button>
         </div>
 
         <!-- Navigation Tabs -->
@@ -601,6 +995,7 @@
             <div class="nav-tabs">
                 <button class="nav-tab active" onclick="switchTab('daily')">Harian</button>
                 <button class="nav-tab" onclick="switchTab('monthly')">Rekap Bulanan</button>
+                <button id="admin-tab-btn" class="nav-tab admin-tab" onclick="switchTab('admin')" style="display: none;">Admin Panel</button>
             </div>
         </div>
 
@@ -704,6 +1099,100 @@
                 </div>
             </div>
         </div>
+
+        <!-- Admin Tab -->
+        <div id="admin-tab" class="tab-content">
+            <div class="admin-panel">
+                <h3>👑 Admin Panel</h3>
+                <div class="admin-actions">
+                    <div class="admin-action-card" onclick="openBulkEditModal()">
+                        <h4>👥 Edit Nama Peserta</h4>
+                        <p>Ubah nama peserta secara massal atau individual</p>
+                    </div>
+                    <div class="admin-action-card" onclick="openProgressManager()">
+                        <h4>📝 Kelola Progress</h4>
+                        <p>Edit data pengerjaan tugas harian peserta</p>
+                    </div>
+                    <div class="admin-action-card" onclick="exportData()">
+                        <h4>📊 Export Data</h4>
+                        <p>Download data progress dalam format JSON</p>
+                    </div>
+                    <div class="admin-action-card" onclick="resetSystem()">
+                        <h4>🔄 Reset Sistem</h4>
+                        <p>Reset ulang sistem ke hari ini</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="admin-login-modal" class="admin-modal">
+        <div class="admin-modal-content">
+            <h3>🔐 Admin Login</h3>
+            <div class="admin-form-group">
+                <label>Username:</label>
+                <input type="text" id="admin-username" placeholder="Masukkan username">
+            </div>
+            <div class="admin-form-group">
+                <label>Password:</label>
+                <input type="password" id="admin-password" placeholder="Masukkan password">
+            </div>
+            <div class="admin-modal-buttons">
+                <button class="admin-btn admin-btn-secondary" onclick="hideAdminLogin()">Batal</button>
+                <button class="admin-btn admin-btn-primary" onclick="adminLogin()">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Participant Modal -->
+    <div id="edit-modal" class="edit-modal">
+        <div class="edit-modal-content">
+            <h3>✏️ Edit Peserta</h3>
+            <form id="edit-form">
+                <div class="edit-form-group">
+                    <label>Nama Peserta:</label>
+                    <input type="text" id="edit-name" placeholder="Masukkan nama baru">
+                </div>
+                
+                <div class="edit-form-group">
+                    <label>Progress Harian:</label>
+                    <div class="progress-editor">
+                        <h5>Data Pengerjaan Tugas</h5>
+                        <div id="date-progress-list" class="date-progress-list">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                        
+                        <div class="add-date-section">
+                            <h5>Tambah Tanggal Baru</h5>
+                            <div class="add-date-form">
+                                <input type="date" id="new-date-input" max="2025-12-31">
+                                <button type="button" class="add-date-btn" onclick="addProgressDate()">Tambah</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-modal-buttons">
+                    <button type="button" class="admin-btn admin-btn-secondary" onclick="hideEditModal()">Batal</button>
+                    <button type="button" class="admin-btn admin-btn-primary" onclick="saveParticipantEdit()">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bulk Edit Modal -->
+    <div id="bulk-edit-modal" class="edit-modal">
+        <div class="edit-modal-content">
+            <h3>👥 Edit Nama Peserta</h3>
+            <div id="bulk-edit-list">
+                <!-- Will be populated dynamically -->
+            </div>
+            <div class="admin-modal-buttons">
+                <button class="admin-btn admin-btn-secondary" onclick="hideBulkEditModal()">Batal</button>
+                <button class="admin-btn admin-btn-primary" onclick="saveBulkEdit()">Simpan Semua</button>
+            </div>
+        </div>
     </div>
 
     <!-- Firebase SDK -->
@@ -730,6 +1219,334 @@
     </script>
 
     <script>
+        // Admin System Variables
+        let isAdminLoggedIn = false;
+        let currentEditingParticipant = null;
+
+        // Admin credentials (in real app, this should be more secure)
+        const ADMIN_CREDENTIALS = {
+            username: 'admin',
+            password: 'admin123'
+        };
+
+        // Admin Functions
+        function showAdminLogin() {
+            document.getElementById('admin-login-modal').style.display = 'flex';
+            document.getElementById('admin-username').focus();
+        }
+
+        function hideAdminLogin() {
+            document.getElementById('admin-login-modal').style.display = 'none';
+            document.getElementById('admin-username').value = '';
+            document.getElementById('admin-password').value = '';
+        }
+
+        function adminLogin() {
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                isAdminLoggedIn = true;
+                hideAdminLogin();
+                showAdminInterface();
+                alert('✅ Login admin berhasil!');
+            } else {
+                alert('❌ Username atau password salah!');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            hideAdminInterface();
+            switchTab('daily');
+            alert('👋 Logout admin berhasil!');
+        }
+
+        function showAdminInterface() {
+            document.getElementById('admin-status').style.display = 'block';
+            document.getElementById('admin-tab-btn').style.display = 'block';
+            
+            // Re-render to show admin buttons on participant cards
+            renderDailyTab();
+        }
+
+        function hideAdminInterface() {
+            document.getElementById('admin-status').style.display = 'none';
+            document.getElementById('admin-tab-btn').style.display = 'none';
+            
+            // Re-render to hide admin buttons
+            renderDailyTab();
+        }
+
+        // Edit Participant Functions
+        function editParticipant(participantId) {
+            if (!isAdminLoggedIn) {
+                alert('❌ Anda harus login sebagai admin terlebih dahulu!');
+                return;
+            }
+
+            const participant = participants.find(p => p.id === participantId);
+            if (!participant) {
+                alert('❌ Peserta tidak ditemukan!');
+                return;
+            }
+
+            currentEditingParticipant = participant;
+            
+            // Populate form
+            document.getElementById('edit-name').value = participant.name;
+            
+            // Populate progress list
+            populateProgressList(participant);
+            
+            // Show modal
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        function populateProgressList(participant) {
+            const container = document.getElementById('date-progress-list');
+            container.innerHTML = '';
+
+            // Get all progress dates for this participant
+            const progressDates = Object.keys(participant.dailyProgress || {}).sort().reverse();
+
+            if (progressDates.length === 0) {
+                container.innerHTML = '<p style="color: #6B7280; text-align: center; padding: 20px;">Belum ada data progress</p>';
+                return;
+            }
+
+            progressDates.forEach(date => {
+                const item = document.createElement('div');
+                item.className = 'date-progress-item';
+                
+                const dateDisplay = new Date(date + 'T12:00:00').toLocaleDateString('id-ID', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                item.innerHTML = `
+                    <span>${dateDisplay}</span>
+                    <div class="progress-toggle">
+                        <input type="checkbox" class="progress-checkbox" 
+                               data-date="${date}" 
+                               ${participant.dailyProgress[date] ? 'checked' : ''}>
+                        <button type="button" class="remove-date-btn" onclick="removeProgressDate('${date}')">Hapus</button>
+                    </div>
+                `;
+                
+                container.appendChild(item);
+            });
+        }
+
+        function addProgressDate() {
+            const dateInput = document.getElementById('new-date-input');
+            const selectedDate = dateInput.value;
+
+            if (!selectedDate) {
+                alert('❌ Pilih tanggal terlebih dahulu!');
+                return;
+            }
+
+            if (!currentEditingParticipant.dailyProgress) {
+                currentEditingParticipant.dailyProgress = {};
+            }
+
+            // Add the progress entry
+            currentEditingParticipant.dailyProgress[selectedDate] = true;
+
+            // Refresh the progress list
+            populateProgressList(currentEditingParticipant);
+
+            // Clear the input
+            dateInput.value = '';
+
+            console.log(`➕ Added progress date ${selectedDate} for ${currentEditingParticipant.name}`);
+        }
+
+        function removeProgressDate(date) {
+            if (confirm(`⚠️ Hapus data pengerjaan tanggal ${new Date(date + 'T12:00:00').toLocaleDateString('id-ID')}?`)) {
+                delete currentEditingParticipant.dailyProgress[date];
+                populateProgressList(currentEditingParticipant);
+                console.log(`➖ Removed progress date ${date} for ${currentEditingParticipant.name}`);
+            }
+        }
+
+        function saveParticipantEdit() {
+            if (!currentEditingParticipant) return;
+
+            // Update name
+            const newName = document.getElementById('edit-name').value.trim();
+            if (newName) {
+                currentEditingParticipant.name = newName;
+            }
+
+            // Update progress from checkboxes
+            const checkboxes = document.querySelectorAll('.progress-checkbox');
+            checkboxes.forEach(checkbox => {
+                const date = checkbox.dataset.date;
+                if (checkbox.checked) {
+                    currentEditingParticipant.dailyProgress[date] = true;
+                } else {
+                    delete currentEditingParticipant.dailyProgress[date];
+                }
+            });
+
+            // Save to Firebase and localStorage
+            saveParticipantToFirebase(currentEditingParticipant);
+            saveToLocalStorage();
+
+            // Update monthly records
+            updateMonthlyRecords();
+
+            // Re-render
+            renderDailyTab();
+            if (document.getElementById('monthly-tab').classList.contains('active')) {
+                renderMonthlyTab();
+            }
+
+            hideEditModal();
+            alert(`✅ Data ${currentEditingParticipant.name} berhasil disimpan!`);
+
+            console.log(`💾 Saved participant: ${currentEditingParticipant.name}`);
+            console.log('Progress dates:', Object.keys(currentEditingParticipant.dailyProgress || {}));
+        }
+
+        function hideEditModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+            currentEditingParticipant = null;
+        }
+
+        // Bulk Edit Functions
+        function openBulkEditModal() {
+            const container = document.getElementById('bulk-edit-list');
+            container.innerHTML = '';
+
+            participants.forEach(participant => {
+                const item = document.createElement('div');
+                item.className = 'edit-form-group';
+                item.innerHTML = `
+                    <label>Peserta ${participant.id}:</label>
+                    <input type="text" data-participant-id="${participant.id}" 
+                           value="${participant.name}" placeholder="Nama peserta">
+                `;
+                container.appendChild(item);
+            });
+
+            document.getElementById('bulk-edit-modal').style.display = 'flex';
+        }
+
+        function hideBulkEditModal() {
+            document.getElementById('bulk-edit-modal').style.display = 'none';
+        }
+
+        function saveBulkEdit() {
+            const inputs = document.querySelectorAll('#bulk-edit-list input');
+            let changeCount = 0;
+
+            inputs.forEach(input => {
+                const participantId = parseInt(input.dataset.participantId);
+                const newName = input.value.trim();
+                
+                const participant = participants.find(p => p.id === participantId);
+                if (participant && newName && participant.name !== newName) {
+                    participant.name = newName;
+                    saveParticipantToFirebase(participant);
+                    changeCount++;
+                }
+            });
+
+            if (changeCount > 0) {
+                saveToLocalStorage();
+                renderDailyTab();
+                alert(`✅ ${changeCount} nama peserta berhasil diubah!`);
+            } else {
+                alert('ℹ️ Tidak ada perubahan nama yang disimpan.');
+            }
+
+            hideBulkEditModal();
+        }
+
+        // Progress Manager
+        function openProgressManager() {
+            alert('📝 Untuk mengelola progress individual, klik tombol "Edit" pada kartu peserta di tab Harian.');
+        }
+
+        // Export Data
+        function exportData() {
+            const exportData = {
+                participants: participants,
+                monthlyRecords: monthlyRecords,
+                exportDate: getJakartaTimeString(),
+                totalParticipants: participants.length
+            };
+
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `quran_tracker_data_${getJakartaDateKey()}.json`;
+            link.click();
+
+            alert('📊 Data berhasil diexport! File akan didownload otomatis.');
+        }
+
+        // Reset System
+        function resetSystem() {
+            if (!confirm('⚠️ PERINGATAN! Ini akan mereset sistem ke hari ini dan menghapus semua progress.\n\nApakah Anda yakin?')) {
+                return;
+            }
+
+            if (!confirm('🚨 KONFIRMASI TERAKHIR! Semua data progress akan hilang!\n\nLanjutkan reset?')) {
+                return;
+            }
+
+            // Reset all progress
+            participants.forEach(participant => {
+                participant.dailyProgress = {};
+            });
+
+            // Reset monthly records
+            monthlyRecords = {};
+
+            // Reset base start date to today
+            const today = getJakartaDate();
+            baseStartDate = new Date(today);
+            baseStartDate.setHours(0, 0, 0, 0);
+
+            // Update current date
+            currentDate = today;
+
+            // Update system
+            updateAllParticipantsJuz();
+
+            // Save everything
+            participants.forEach(participant => {
+                saveParticipantToFirebase(participant);
+            });
+            saveToLocalStorage();
+
+            // Re-render
+            renderDailyTab();
+            updateCurrentDate();
+
+            alert('✅ Sistem berhasil direset! Program dimulai ulang dari hari ini.');
+            console.log('🔄 SYSTEM RESET COMPLETED');
+        }
+
+        // Keyboard shortcuts for admin login
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('admin-login-modal').style.display === 'flex') {
+                if (e.key === 'Enter') {
+                    adminLogin();
+                } else if (e.key === 'Escape') {
+                    hideAdminLogin();
+                }
+            }
+        });
+
         // Application Data - NAMA PESERTA YANG SUDAH DIPERBAIKI
         const participantNames = [
             'Syafiq',      // Peserta 1
@@ -1543,6 +2360,10 @@
                 // Pastikan nama tidak undefined
                 const displayName = participant.name || `Peserta ${participant.id}`;
                 
+                // Admin edit button - only show if admin is logged in
+                const adminButton = isAdminLoggedIn ? 
+                    `<button class="admin-edit-btn" onclick="event.stopPropagation(); editParticipant(${participant.id})">Edit</button>` : '';
+                
                 card.innerHTML = `
                     <div class="participant-content">
                         <div class="participant-info">
@@ -1555,6 +2376,7 @@
                                 ${juzDetail.description ? `<p class="description">${juzDetail.description}</p>` : ''}
                             </div>
                             ${isCompleted ? '<small style="color: #10B981; font-weight: 600;">✅ Sudah Selesai</small>' : '<small style="color: #6B7280;">⏳ Belum selesai</small>'}
+                            ${adminButton}
                         </div>
                         <div class="participant-actions">
                             <span class="icon ${isCompleted ? 'icon-completed' : 'icon-pending'}">📖</span>
@@ -1589,6 +2411,10 @@
                     populateMonthSelector();
                     renderMonthlyTab();
                 }, 100);
+            } else if (tabName === 'admin' && !isAdminLoggedIn) {
+                // Redirect to daily tab if not admin
+                switchTab('daily');
+                showAdminLogin();
             }
         }
 
@@ -1801,394 +2627,56 @@
             });
         });
 
-        // Simulation variables
-        let simulatedTime = null;
-        let isSimulating = false;
-
-        // Override time functions for simulation
-        function getSimulatedJakartaTime() {
-            if (isSimulating && simulatedTime) {
-                return new Date(simulatedTime);
-            }
-            return getJakartaTime();
-        }
-
         // Debug functions (available in console)
-        window.debugFunctions = {
-            testReset: () => {
-                console.log('🧪 Manual reset test triggered');
-                performDailyReset();
+        window.adminDebug = {
+            // Admin login bypass for testing
+            forceAdminLogin: () => {
+                isAdminLoggedIn = true;
+                showAdminInterface();
+                console.log('👑 Admin mode activated via debug');
             },
             
-            // 🚀 SIMULASI WAKTU 23:59
-            simulate2359: () => {
-                console.log('🕚 SIMULASI: Setting waktu ke 23:59:00 WIB');
-                
-                // Set simulasi ke 23:59:00 hari ini
-                const jakartaTime = getJakartaTime();
-                simulatedTime = new Date(jakartaTime);
-                simulatedTime.setHours(23, 59, 0, 0);
-                isSimulating = true;
-                
-                console.log(`⏰ Waktu disimulasikan: ${simulatedTime.toLocaleString('id-ID')} WIB`);
-                
-                // Override fungsi-fungsi waktu untuk simulasi
-                window.originalGetJakartaTime = getJakartaTime;
-                window.getJakartaTime = getSimulatedJakartaTime;
-                window.getJakartaDate = getSimulatedJakartaTime;
-                window.getJakartaDateKey = () => {
-                    const simTime = getSimulatedJakartaTime();
-                    return simTime.toISOString().split('T')[0];
-                };
-                window.getJakartaTimeString = () => {
-                    const simTime = getSimulatedJakartaTime();
-                    return simTime.toLocaleString('id-ID', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        hour12: false
-                    });
-                };
-                
-                // Update current date untuk simulasi
-                currentDate = simulatedTime;
-                
-                // Update tampilan
-                updateTimezoneDisplay();
-                updateCurrentDate();
-                
-                // Hitung waktu hingga tengah malam (1 menit lagi)
-                const midnight = new Date(simulatedTime);
-                midnight.setDate(midnight.getDate() + 1);
-                midnight.setHours(0, 0, 0, 0);
-                const timeUntilMidnight = midnight.getTime() - simulatedTime.getTime();
-                
-                console.log(`⏰ Waktu hingga tengah malam: ${Math.round(timeUntilMidnight / 1000)} detik`);
-                console.log('⚠️ GUNAKAN debugFunctions.jumpToMidnight() untuk melompat ke 00:00');
-                console.log('⚠️ GUNAKAN debugFunctions.stopSimulation() untuk menghentikan simulasi');
-                
-                // Setup countdown untuk midnight
-                let countdown = 60; // 60 detik dari 23:59:00 ke 00:00:00
-                const countdownInterval = setInterval(() => {
-                    countdown--;
-                    simulatedTime.setSeconds(simulatedTime.getSeconds() + 1);
-                    
-                    if (countdown <= 0) {
-                        clearInterval(countdownInterval);
-                        console.log('🌙 MIDNIGHT REACHED! Triggering reset...');
-                        debugFunctions.jumpToMidnight();
-                    } else {
-                        updateTimezoneDisplay();
-                        if (countdown <= 10) {
-                            console.log(`⏰ Countdown: ${countdown} detik ke tengah malam...`);
-                        }
-                    }
-                }, 1000);
-                
-                // Store interval untuk cleanup
-                window.simulationCountdown = countdownInterval;
-                
-                alert('🕚 SIMULASI AKTIF!\n\nWaktu diset ke 23:59:00 WIB\nCountdown 60 detik ke tengah malam akan dimulai\n\nLihat console untuk detail!');
+            // Check admin status
+            checkAdminStatus: () => {
+                console.log('Admin status:', isAdminLoggedIn ? 'Logged in' : 'Not logged in');
             },
             
-            // 🌙 SIMULASI TEPAT TENGAH MALAM
-            jumpToMidnight: () => {
-                if (!isSimulating) {
-                    console.log('⚠️ Simulasi belum aktif. Gunakan simulate2359() dulu');
-                    return;
+            // Add sample progress for testing
+            addSampleProgress: () => {
+                const today = getJakartaDateKey();
+                const yesterday = new Date(getJakartaTime());
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayKey = yesterday.toISOString().split('T')[0];
+                
+                // Add progress for some participants
+                for (let i = 0; i < 15; i++) {
+                    participants[i].dailyProgress[today] = true;
+                    participants[i].dailyProgress[yesterdayKey] = true;
                 }
                 
-                console.log('🌙 JUMPING TO MIDNIGHT: 00:00:00 WIB');
-                
-                // Set ke tengah malam
-                simulatedTime.setDate(simulatedTime.getDate() + 1);
-                simulatedTime.setHours(0, 0, 0, 0);
-                currentDate = new Date(simulatedTime);
-                
-                console.log(`⏰ Waktu sekarang: ${simulatedTime.toLocaleString('id-ID')} WIB`);
-                
-                // Clear countdown jika ada
-                if (window.simulationCountdown) {
-                    clearInterval(window.simulationCountdown);
-                }
-                
-                // Trigger reset
-                console.log('🔄 TRIGGERING DAILY RESET...');
-                performDailyReset();
-                
-                alert('🌙 TENGAH MALAM!\n\nReset harian telah dijalankan!\nCek perubahan rotasi juz di aplikasi.');
-            },
-            
-            // 🛑 HENTIKAN SIMULASI
-            stopSimulation: () => {
-                console.log('🛑 STOPPING SIMULATION');
-                
-                isSimulating = false;
-                simulatedTime = null;
-                
-                // Restore original functions
-                if (window.originalGetJakartaTime) {
-                    window.getJakartaTime = window.originalGetJakartaTime;
-                    window.getJakartaDate = window.originalGetJakartaTime;
-                    window.getJakartaDateKey = () => {
-                        return getJakartaTime().toISOString().split('T')[0];
-                    };
-                    window.getJakartaTimeString = () => {
-                        const jakartaTime = getJakartaTime();
-                        return jakartaTime.toLocaleString('id-ID', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
-                            hour12: false
-                        });
-                    };
-                }
-                
-                // Clear countdown
-                if (window.simulationCountdown) {
-                    clearInterval(window.simulationCountdown);
-                }
-                
-                // Reset ke waktu real
-                currentDate = getJakartaTime();
-                
-                // Update tampilan
-                updateTimezoneDisplay();
-                updateCurrentDate();
                 renderDailyTab();
-                
-                // Re-setup real reset schedule
-                setupDailyReset();
-                
-                console.log('✅ Simulasi dihentikan, kembali ke waktu real');
-                alert('✅ Simulasi dihentikan!\n\nAplikasi kembali menggunakan waktu real.');
+                updateMonthlyRecords();
+                console.log('✅ Sample progress added for testing');
             },
             
-            // 🕐 CEK STATUS SIMULASI
-            checkSimulation: () => {
-                if (isSimulating) {
-                    console.log('🕚 SIMULASI AKTIF:');
-                    console.log(`⏰ Waktu simulasi: ${simulatedTime.toLocaleString('id-ID')} WIB`);
-                    console.log(`⏰ Waktu real: ${window.originalGetJakartaTime().toLocaleString('id-ID')} WIB`);
-                } else {
-                    console.log('🕐 Tidak ada simulasi aktif');
-                    console.log(`⏰ Waktu real: ${getJakartaTime().toLocaleString('id-ID')} WIB`);
-                }
-            },
-            checkSchedule: () => {
-                const now = getJakartaTime();
-                const tomorrow = new Date(now);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                tomorrow.setHours(0, 0, 0, 0);
-                const timeUntilMidnight = tomorrow.getTime() - now.getTime();
-                
-                console.log('📊 Reset Schedule Info (WIB):');
-                console.log(`Current time: ${getJakartaTimeString()}`);
-                console.log(`Next reset: ${tomorrow.toLocaleString('id-ID')}`);
-                console.log(`Time until reset: ${Math.round(timeUntilMidnight / 1000 / 60)} minutes`);
-                console.log(`Last reset check: ${lastResetCheck}`);
-                console.log(`Current date key: ${getJakartaDateKey()}`);
-            },
-            forceNewDay: () => {
-                console.log('🧪 Force new day simulation');
-                const tomorrow = getJakartaDate();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                currentDate = tomorrow;
-                performDailyReset();
-            },
-            checkJuzRotation: () => {
-                console.log('📖 Current Rotation System:');
-                const rotatedOrder = getRotatedParticipantOrder(currentDate);
-                
-                console.log('📋 Today\'s assignments:');
-                rotatedOrder.forEach((participant, index) => {
-                    const juzNumber = index + 1;
-                    console.log(`Juz ${juzNumber}: ${participant.name} (ID: ${participant.id})`);
-                });
-                
-                const jakartaCurrentDate = new Date(currentDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
-                const jakartaStartDate = new Date(baseStartDate.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
-                const diffTime = jakartaCurrentDate - jakartaStartDate;
-                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                
-                console.log(`📅 Days since start: ${diffDays}`);
-                console.log(`📖 Juz 1 (Top): ${rotatedOrder[0]?.name}`);
-                console.log(`📖 Juz 30 (Bottom): ${rotatedOrder[29]?.name}`);
-                
-                console.log('\n🔮 Tomorrow\'s preview:');
-                const tomorrow = new Date(currentDate);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                const tomorrowOrder = getRotatedParticipantOrder(tomorrow);
-                console.log(`Juz 1 (Top): ${tomorrowOrder[0]?.name} (today's Juz 30)`);
-                console.log(`Juz 2: ${tomorrowOrder[1]?.name} (today's Juz 1)`);
-            },
-            checkNamesDebug: () => {
-                console.log('🔍 Debugging nama peserta:');
-                console.log('📝 participantNames array:', participantNames);
-                console.log('📝 participantNames length:', participantNames.length);
-                console.log('👥 Current participants:');
-                participants.forEach((p, i) => {
-                    console.log(`  ${i + 1}. ID: ${p.id} | Name: "${p.name}" | From array: "${participantNames[i]}" | Juz: ${p.currentJuz}`);
-                });
-                
-                // Check if names are properly assigned
-                const missingNames = participants.filter(p => !p.name || p.name.startsWith('Peserta'));
-                if (missingNames.length > 0) {
-                    console.warn('⚠️ Found participants with missing names:', missingNames);
-                } else {
-                    console.log('✅ All participants have proper names');
-                }
-            },
-            forceFixNames: () => {
-                console.log('🔧 Force fixing participant names...');
-                console.log('📝 Available names:', participantNames);
-                
-                // Paksa update semua nama
-                participants.forEach((participant, index) => {
-                    const oldName = participant.name;
-                    participant.name = participantNames[index] || `Peserta ${participant.id}`;
-                    console.log(`${participant.id}. "${oldName}" → "${participant.name}"`);
-                });
-                
-                // Save ke Firebase dan localStorage
-                participants.forEach(participant => {
-                    saveParticipantToFirebase(participant);
-                });
-                saveToLocalStorage();
-                
-                // Re-render
-                renderDailyTab();
-                
-                console.log('✅ Names fixed and saved to Firebase + localStorage');
-            },
-            testTimezone: () => {
-                const utc = new Date();
-                const jakarta = getJakartaTime();
-                console.log('🌍 Timezone Test:');
-                console.log(`UTC: ${utc.toISOString()}`);
-                console.log(`Jakarta: ${getJakartaTimeString()} (${jakarta.toISOString()})`);
-                console.log(`Date key Jakarta: ${getJakartaDateKey()}`);
-                
-                // Test midnight calculation
-                const tomorrow = new Date(jakarta);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                tomorrow.setHours(0, 0, 0, 0);
-                const timeUntilMidnight = tomorrow.getTime() - jakarta.getTime();
-                
-                console.log(`⏰ Time until next midnight (Jakarta): ${Math.round(timeUntilMidnight / 1000 / 60)} minutes`);
-                console.log(`⏰ Next midnight will be: ${tomorrow.toLocaleString('id-ID')}`);
-            },
-            resetToToday: () => {
-                console.log('🔄 RESET: Setting start date to today');
-                const today = getJakartaDate();
-                baseStartDate = new Date(today);
-                baseStartDate.setHours(0, 0, 0, 0);
-                
-                console.log(`📅 New start date: ${baseStartDate.toLocaleDateString('id-ID')}`);
-                
-                // Clear all progress
-                participants.forEach(participant => {
-                    participant.dailyProgress = {};
-                });
-                
-                // Update system with new base date
-                updateAllParticipantsJuz();
-                
-                // Save to Firebase and localStorage
-                participants.forEach(participant => {
-                    saveParticipantToFirebase(participant);
-                });
-                saveToLocalStorage();
-                
-                // Re-render
-                renderDailyTab();
-                
-                console.log('✅ RESET COMPLETED - Program dimulai hari ini');
-                console.log('📖 Sistem rotasi: Juz 1-30 tetap urut, peserta yang berputar');
-                
-                // Show current assignment
-                const rotatedOrder = getRotatedParticipantOrder(currentDate);
-                console.log(`📋 Hari ini - Juz 1: ${rotatedOrder[0]?.name}, Juz 30: ${rotatedOrder[29]?.name}`);
-            },
+            // Clear all progress
             clearAllProgress: () => {
-                if (confirm('⚠️ BAHAYA! Ini akan menghapus SEMUA progress bacaan!\n\nLanjutkan?')) {
-                    console.log('🗑️ Clearing all daily progress...');
-                    
-                    participants.forEach(participant => {
-                        participant.dailyProgress = {};
-                    });
-                    
-                    monthlyRecords = {};
-                    
-                    // Save to Firebase and localStorage
-                    participants.forEach(participant => {
-                        saveParticipantToFirebase(participant);
-                    });
-                    saveToLocalStorage();
-                    
-                    // Re-render
-                    renderDailyTab();
-                    
-                    console.log('✅ All progress cleared');
-                    alert('✅ Semua progress telah dihapus!');
-                }
-            },
-            previewTomorrow: () => {
-                console.log('🔮 PREVIEW BESOK:');
-                const tomorrow = new Date(currentDate);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                
-                const tomorrowOrder = getRotatedParticipantOrder(tomorrow);
-                
-                console.log('📋 Urutan besok:');
-                console.log(`Juz 1 (Paling Atas): ${tomorrowOrder[0]?.name} ← Hari ini Juz 30`);
-                console.log(`Juz 2: ${tomorrowOrder[1]?.name} ← Hari ini Juz 1`);
-                console.log(`Juz 3: ${tomorrowOrder[2]?.name} ← Hari ini Juz 2`);
-                console.log('...');
-                console.log(`Juz 30 (Paling Bawah): ${tomorrowOrder[29]?.name} ← Hari ini Juz 29`);
-                
-                console.log('\n✅ Konfirmasi sistem rotasi benar:');
-                console.log('- Juz 1-30 tetap urut dari atas ke bawah');
-                console.log('- Yang kemarin Juz 30 naik ke Juz 1 (paling atas)');
-                console.log('- Yang lain turun satu posisi');
+                participants.forEach(p => p.dailyProgress = {});
+                renderDailyTab();
+                updateMonthlyRecords();
+                console.log('🗑️ All progress cleared');
             }
         };
 
-        // Make debug functions available
-        console.log('🔧 Debug functions available:');
+        console.log('🔧 Admin Debug functions available:');
+        console.log('- adminDebug.forceAdminLogin() - Bypass admin login');
+        console.log('- adminDebug.checkAdminStatus() - Check if admin logged in');
+        console.log('- adminDebug.addSampleProgress() - Add sample data for testing');
+        console.log('- adminDebug.clearAllProgress() - Clear all progress');
         console.log('');
-        console.log('🕚 SIMULASI WAKTU:');
-        console.log('- debugFunctions.simulate2359() - 🚀 SIMULASI JAM 23:59 WIB');
-        console.log('- debugFunctions.jumpToMidnight() - 🌙 LOMPAT KE TENGAH MALAM');
-        console.log('- debugFunctions.stopSimulation() - 🛑 HENTIKAN SIMULASI');
-        console.log('- debugFunctions.checkSimulation() - 🕐 CEK STATUS SIMULASI');
-        console.log('');
-        console.log('🔧 FUNGSI LAINNYA:');
-        console.log('- debugFunctions.testReset() - Test reset manually');
-        console.log('- debugFunctions.checkSchedule() - Check reset schedule');
-        console.log('- debugFunctions.forceNewDay() - Simulate new day');
-        console.log('- debugFunctions.checkJuzRotation() - Check rotation system');
-        console.log('- debugFunctions.previewTomorrow() - 🔮 Preview tomorrow rotation');
-        console.log('- debugFunctions.testTimezone() - Test timezone Jakarta');
-        console.log('- debugFunctions.resetToToday() - 🔥 RESET: Start program from today');
-        console.log('- debugFunctions.clearAllProgress() - 🗑️ Clear all reading progress');
-        console.log('');
-        console.log('🔄 FIXED TIMEZONE SYSTEM:');
-        console.log('🕐 Reset sekarang akan tepat pada pukul 00:00 WIB');
-        console.log('📖 Juz 1-30 tetap urut dari atas ke bawah');
-        console.log('👥 Peserta yang berputar - yang kemarin juz 30 naik ke juz 1');
-        console.log('');
-        console.log('🚀 CARA SIMULASI:');
-        console.log('1. debugFunctions.simulate2359() - Set waktu ke 23:59');
-        console.log('2. Tunggu countdown 60 detik atau gunakan jumpToMidnight()');
-        console.log('3. Lihat perubahan rotasi juz');
-        console.log('4. debugFunctions.stopSimulation() - Kembali ke waktu real');
+        console.log('👑 ADMIN CREDENTIALS:');
+        console.log('Username: admin');
+        console.log('Password: admin123');
     </script>
 </body>
 </html>
