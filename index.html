@@ -1900,7 +1900,7 @@
                     window.firebaseModules.collection(db, 'participants')
                 ).then((snapshot) => {
                     console.log('🔍 Test read successful. Documents found:', snapshot.size);
-                    alert(`✅ Firebase terhubung dengan baik!\n\nProject: ibkangaji\nStatus: Real-time sync aktif\nDocuments: ${snapshot.size}`);
+                    alert(`✅ BACA DULU DESKRIPSI JUZ YANG AKAN DIBACA\n\nAda beberapa juz yang "tidak sesuai" dengan pembagian halaman mushaf\nUntuk menyesuaikan tema\nDocuments: ${snapshot.size}`);
                 }).catch((error) => {
                     console.error('❌ Test read failed:', error);
                     alert(`❌ Firebase connection issue:\n\n${error.message}\n\nCek security rules di Firebase Console!`);
